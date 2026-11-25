@@ -1,0 +1,99 @@
+.section {
+  position: relative;
+  padding: 0 var(--pad) 18vh;
+}
+
+.head {
+  position: relative;
+  height: 100vh;
+  min-height: 680px;
+}
+.kicker {
+  position: absolute;
+  left: 0;
+  top: 13vh;
+  color: var(--muted);
+}
+.title {
+  position: absolute;
+  inset: auto 0 6vh 0;
+  display: grid;
+  font-size: var(--fs-display);
+  font-weight: 500;
+  letter-spacing: var(--track-display);
+  line-height: 0.8;
+}
+.top {
+  justify-self: start;
+  margin-left: -0.04em;
+}
+.bottom {
+  position: relative;
+  justify-self: end;
+  display: inline-flex;
+  align-items: flex-start;
+  margin-right: -0.02em;
+}
+.count {
+  margin-left: 0.6vw;
+  margin-top: 0.4em;
+  font-size: var(--fs-micro);
+  letter-spacing: 0.06em;
+  vertical-align: top;
+}
+/* Feet on the cap line of "Work" (~0.7em above the baseline at line-height .8). */
+.station {
+  left: 42%;
+  bottom: 0.66em;
+  height: 38vh;
+  transform: translateX(-50%);
+}
+.note {
+  position: absolute;
+  right: 0;
+  top: 13vh;
+  width: min(30ch, 24vw);
+  text-align: right;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  row-gap: 0;
+  padding-top: 10vh;
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+  padding-top: 16vh;
+}
+.cta {
+  display: inline-flex;
+  align-items: stretch;
+  height: 40px;
+  background: var(--lime);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  transition: background 0.3s var(--ease-out);
+}
+.cta > span:first-child {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 16px;
+}
+.ctaChip {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  background: var(--ink);
+  color: var(--bg);
+  transition: width 0.4s var(--ease-expo);
+}
+.cta:hover {
+  background: var(--lime-deep);
+}
+.cta:hover .ctaChip {
+  width: 52px;
+}

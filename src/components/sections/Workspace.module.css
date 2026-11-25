@@ -1,0 +1,75 @@
+.section {
+  position: relative;
+  height: 100vh;
+  min-height: 700px;
+}
+
+.sticky {
+  position: relative;
+  height: 100vh;
+  min-height: 700px;
+  pointer-events: none;
+}
+.sticky a {
+  pointer-events: auto;
+}
+
+:global(html[data-experience='desktop-3d']) .section {
+  height: 175vh;
+}
+:global(html[data-experience='desktop-3d']) .sticky {
+  position: sticky;
+  top: 0;
+}
+
+.kicker {
+  position: absolute;
+  left: var(--pad);
+  top: calc(var(--header-h) + 8vh);
+  color: var(--muted);
+}
+.title {
+  position: absolute;
+  left: var(--pad);
+  top: calc(var(--header-h) + 8vh + 34px);
+  display: grid;
+}
+.paragraph {
+  position: absolute;
+  left: var(--pad);
+  top: calc(var(--header-h) + 8vh + 34px + var(--fs-title) * 2.05);
+  width: min(36ch, 27vw);
+}
+.lists {
+  position: absolute;
+  left: var(--pad);
+  bottom: 7vh;
+  display: flex;
+  gap: 5vw;
+}
+.list {
+  margin-top: 10px;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  line-height: 1.55;
+}
+
+/* Floor point under the chair; height = standing apparent height. */
+.station {
+  left: 63vw;
+  bottom: 13vh;
+  height: 58vh;
+  transform: translateX(-50%);
+}
+
+.caption {
+  display: none;
+  position: absolute;
+  right: var(--pad);
+  bottom: 7vh;
+  color: var(--muted);
+}
+
+:global(html[data-experience='desktop-3d']) .caption {
+  display: block;
+}

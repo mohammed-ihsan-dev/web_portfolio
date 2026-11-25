@@ -1,0 +1,23 @@
+.note {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  line-height: 1.25;
+}
+.note[data-direction='right'] {
+  flex-direction: row-reverse;
+}
+.note[data-direction='right'] .arrow {
+  transform: scaleX(-1);
+}
+.arrow {
+  width: clamp(44px, 3.6vw, 64px);
+  height: auto;
+  margin-top: -0.9em;
+  flex: none;
+}
+.text {
+  display: grid;
+}

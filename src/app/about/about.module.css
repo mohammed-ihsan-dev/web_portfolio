@@ -1,0 +1,104 @@
+.intro {
+  position: relative;
+  display: grid;
+  gap: 28px;
+  padding-bottom: 10vh;
+}
+.statement {
+  font-size: clamp(26px, 3.1vw, 58px);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 1.02;
+}
+.bio {
+  display: grid;
+  gap: 16px;
+  max-width: 48ch;
+}
+.stationWrap {
+  position: relative;
+  height: 60svh;
+}
+.station {
+  left: 50%;
+  bottom: 0;
+  height: 100%;
+  transform: translateX(-50%);
+}
+
+.section {
+  padding: 8vh 0;
+  border-top: 1px solid var(--line-strong);
+}
+.label {
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+.rows {
+  display: grid;
+}
+.row {
+  display: grid;
+  gap: 4px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+.role {
+  font-size: var(--fs-h3);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+}
+.skills {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px var(--gutter);
+}
+.group {
+  font-size: var(--fs-body);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+  .intro {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+    min-height: 92vh;
+    align-content: start;
+  }
+  .statement {
+    grid-column: 1 / span 7;
+  }
+  .bio {
+    grid-column: 1 / span 5;
+  }
+  /* Feet land just above the fold whatever the title height. */
+  .stationWrap {
+    position: absolute;
+    right: 6vw;
+    top: -30vh;
+    width: 24vw;
+    height: 74vh;
+  }
+  .section {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+  }
+  .label {
+    grid-column: 1 / span 3;
+  }
+  .rows,
+  .skills {
+    grid-column: 4 / span 9;
+  }
+  .row {
+    grid-template-columns: 1.3fr 1fr 12em;
+    align-items: baseline;
+  }
+  .skills {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

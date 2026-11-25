@@ -1,0 +1,113 @@
+.list {
+  border-top: 1px solid var(--line-strong);
+}
+.head {
+  display: none;
+}
+.row {
+  border-bottom: 1px solid var(--line-strong);
+}
+.link {
+  display: grid;
+  grid-template-columns: 3.2em minmax(0, 1fr) auto;
+  grid-template-areas:
+    'num title title'
+    'thumb thumb thumb'
+    'cat cat year';
+  gap: 10px 14px;
+  padding: 18px 0;
+}
+.num {
+  grid-area: num;
+  color: var(--muted);
+  padding-top: 0.6em;
+}
+.title {
+  grid-area: title;
+  font-size: clamp(34px, 5.2vw, 96px);
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  line-height: 0.92;
+  transition: transform 0.6s var(--ease-expo);
+}
+.cat {
+  grid-area: cat;
+  color: var(--ink-soft);
+}
+.year {
+  grid-area: year;
+  justify-self: end;
+  color: var(--ink-soft);
+}
+.thumb {
+  grid-area: thumb;
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--bg-deep);
+}
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.9s var(--ease-expo);
+}
+.arrow {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  background: var(--ink);
+  color: var(--bg);
+}
+
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+  .head,
+  .link {
+    display: grid;
+    grid-template-columns: 5em minmax(0, 1fr) 16em 6em 14vw;
+    grid-template-areas: 'num title cat year thumb';
+    align-items: center;
+    gap: var(--gutter);
+  }
+  .head {
+    padding: 0 0 10px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line-strong);
+    margin-top: -1px;
+  }
+  .num {
+    padding-top: 0;
+  }
+  .year {
+    justify-self: start;
+  }
+  .link {
+    padding: 14px 0;
+  }
+  .thumb {
+    aspect-ratio: 16 / 10;
+    clip-path: inset(0 0 0 100%);
+    transition: clip-path 0.7s var(--ease-expo);
+  }
+  .arrow {
+    opacity: 0;
+    transition: opacity 0.4s var(--ease-out);
+  }
+  .link:hover .thumb,
+  .link:focus-visible .thumb {
+    clip-path: inset(0 0 0 0);
+  }
+  .link:hover .arrow,
+  .link:focus-visible .arrow {
+    opacity: 1;
+  }
+  .link:hover .title,
+  .link:focus-visible .title {
+    transform: translateX(1.2vw);
+  }
+}

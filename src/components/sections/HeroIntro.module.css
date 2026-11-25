@@ -1,0 +1,292 @@
+/* ==========================================================================
+   Base = static desktop layout (no WebGL, reduced motion, no JS):
+   two stacked screens. The 3D overrides are at the bottom.
+   ========================================================================== */
+.section {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: 100vh auto;
+}
+.back,
+.front {
+  display: contents;
+}
+
+/* ---------- sky (fallback visual, also shown while WebGL boots) ---------- */
+.sky {
+  grid-area: 1 / 1;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 70% at 50% 110%, #f3eef2 0%, rgb(243 238 242 / 0) 60%),
+    linear-gradient(180deg, var(--sky-top) 0%, #a7bfe2 34%, var(--sky-mid) 52%, #e4e6ee 78%, var(--sky-low) 100%);
+  transition: opacity 0.9s var(--ease-out);
+}
+.cloudA,
+.cloudB {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(255 255 255 / 0.85), rgb(255 255 255 / 0));
+  filter: blur(6px);
+}
+.cloudA {
+  width: 62vw;
+  height: 26vh;
+  left: -12vw;
+  top: 16vh;
+}
+.cloudB {
+  width: 54vw;
+  height: 22vh;
+  right: -10vw;
+  top: 42vh;
+  opacity: 0.8;
+}
+.skyFigure {
+  position: absolute;
+  left: 24%;
+  bottom: 8vh;
+  width: auto;
+  height: 56vh;
+  max-width: none;
+  transform: translateX(-50%);
+}
+
+/* ---------- hero copy ---------- */
+.heroFront {
+  grid-area: 1 / 1;
+  position: relative;
+  pointer-events: none;
+}
+.heroFront a,
+.heroFront button {
+  pointer-events: auto;
+}
+
+.headline {
+  position: absolute;
+  top: calc(var(--header-h) + 4.2vh);
+  left: 0;
+  right: 0;
+  display: grid;
+  justify-items: center;
+  font-size: var(--fs-hero);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 1.02;
+  text-align: center;
+}
+.hlMask {
+  display: block;
+  overflow: clip;
+  overflow-clip-margin: 0.06em;
+  padding-bottom: 0.06em;
+  margin-bottom: -0.06em;
+}
+.hlExit,
+.hlLine {
+  display: block;
+  will-change: transform;
+}
+
+.annotation {
+  position: absolute;
+  left: 41%;
+  top: 59%;
+}
+
+.heroCopy {
+  position: absolute;
+  right: var(--pad);
+  bottom: calc(var(--pad) + 4px);
+  display: grid;
+  gap: 10px;
+  justify-items: end;
+  width: min(31ch, 30vw);
+  text-align: right;
+}
+.heroCopy .mono {
+  color: var(--ink-soft);
+}
+
+.status {
+  position: absolute;
+  left: var(--pad);
+  bottom: calc(var(--pad) + 4px);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #7fb24a;
+  box-shadow: 0 0 0 3px rgb(127 178 74 / 0.2);
+}
+
+.cue {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--pad) - 2px);
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  transform: translateX(-50%);
+}
+.cueLine {
+  position: relative;
+  width: 1px;
+  height: 44px;
+  overflow: hidden;
+  background: rgb(12 12 13 / 0.15);
+}
+.cueLine i {
+  position: absolute;
+  inset: 0;
+  background: var(--ink);
+  transform: translateY(-100%);
+  animation: cue 2.2s var(--ease-in-out) infinite;
+}
+@keyframes cue {
+  0% {
+    transform: translateY(-100%);
+  }
+  55% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+/* ---------- intro (name + character) ---------- */
+.intro {
+  grid-area: 2 / 1;
+  position: relative;
+  height: 100vh;
+  overflow: clip;
+}
+.name {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 41vh;
+  display: flex;
+  justify-content: center;
+  font-size: var(--fs-display);
+  font-weight: 500;
+  letter-spacing: var(--track-display);
+  line-height: 0.8;
+  white-space: nowrap;
+}
+.nameRow {
+  display: inline-flex;
+}
+.charMask {
+  display: inline-block;
+  overflow: clip;
+  overflow-clip-margin: 0.04em;
+  padding: 0.02em 0.01em 0.06em;
+  margin-bottom: -0.06em;
+}
+.char {
+  display: inline-block;
+  will-change: transform;
+}
+.space {
+  display: inline-block;
+  width: 0.2em;
+}
+.introStation {
+  left: 50%;
+  bottom: 3vh;
+  height: 82vh;
+  transform: translateX(-50%);
+}
+
+.introFront {
+  grid-area: 2 / 1;
+  position: relative;
+  height: 100vh;
+  pointer-events: none;
+}
+.introFront a {
+  pointer-events: auto;
+}
+.kicker {
+  position: absolute;
+  left: var(--pad);
+  top: calc(var(--header-h) + 5vh);
+  color: var(--muted);
+}
+.bio {
+  position: absolute;
+  left: var(--pad);
+  top: calc(var(--header-h) + 5vh + 28px);
+  width: min(34ch, 27vw);
+}
+.aboutLink {
+  position: absolute;
+  left: var(--pad);
+  top: calc(var(--header-h) + 5vh + 28px + 6.2em);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid currentColor;
+}
+.aboutLink:hover {
+  border-bottom-color: transparent;
+}
+.meta {
+  position: absolute;
+  left: var(--pad);
+  right: var(--pad);
+  bottom: calc(var(--pad) + 4px);
+  display: flex;
+  justify-content: space-between;
+}
+.meta div {
+  display: flex;
+  gap: 10px;
+}
+.meta dt {
+  color: var(--muted);
+}
+
+/* ==========================================================================
+   Cinematic layout (desktop-3d). Sticky stages; canvas renders between.
+   ========================================================================== */
+:global(html[data-experience='desktop-3d']) .section {
+  display: block;
+  height: 360vh;
+}
+:global(html[data-experience='desktop-3d']) .back,
+:global(html[data-experience='desktop-3d']) .front {
+  display: block;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+:global(html[data-experience='desktop-3d']) .back {
+  z-index: var(--z-back);
+}
+:global(html[data-experience='desktop-3d']) .front {
+  z-index: var(--z-front);
+  margin-top: -100vh;
+}
+:global(html[data-experience='desktop-3d']) .sky,
+:global(html[data-experience='desktop-3d']) .heroFront,
+:global(html[data-experience='desktop-3d']) .intro,
+:global(html[data-experience='desktop-3d']) .introFront {
+  position: absolute;
+  inset: 0;
+  height: auto;
+}
+:global(html[data-experience='desktop-3d'][data-scene='ready']) .sky {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.9s var(--ease-out), visibility 0s 0.9s;
+}

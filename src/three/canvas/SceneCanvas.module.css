@@ -1,0 +1,11 @@
+.canvas {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-canvas);
+  pointer-events: none;
+}
+/* R3F's wrapper div sets pointer-events: auto inline; the canvas must never eat clicks. */
+.canvas *,
+.canvas canvas {
+  pointer-events: none !important;
+}

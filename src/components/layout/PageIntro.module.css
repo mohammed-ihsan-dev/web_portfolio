@@ -1,0 +1,45 @@
+.intro {
+  display: grid;
+  gap: 16px;
+  padding-bottom: clamp(32px, 7vh, 96px);
+}
+.kicker {
+  color: var(--muted);
+}
+.title {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  /* Big, but always on one line: shrink long words to fit the 9-column span. */
+  font-size: min(clamp(64px, 17vw, 300px), calc(74vw / (var(--chars, 6) * 0.56)));
+  font-weight: 500;
+  letter-spacing: -0.065em;
+  line-height: 0.8;
+  margin-left: -0.04em;
+}
+.count {
+  margin: 0.5em 0 0 0.6vw;
+  font-size: var(--fs-micro);
+  letter-spacing: 0.06em;
+}
+.aside {
+  max-width: 36ch;
+}
+
+@media (min-width: 1024px) {
+  .intro {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+    align-items: end;
+  }
+  .kicker {
+    grid-column: 1 / -1;
+  }
+  .title {
+    grid-column: 1 / span 9;
+  }
+  .aside {
+    grid-column: 10 / span 3;
+    padding-bottom: 0.6em;
+  }
+}

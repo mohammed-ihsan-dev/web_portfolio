@@ -1,0 +1,19 @@
+.lines {
+  display: none;
+}
+
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+  .lines {
+    position: fixed;
+    inset: 0 var(--pad);
+    z-index: var(--z-lines);
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+  .lines span {
+    width: 1px;
+    height: 100%;
+    background: var(--line);
+  }
+}

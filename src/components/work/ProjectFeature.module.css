@@ -1,0 +1,124 @@
+.item {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  margin-top: 16vh;
+}
+.item:first-child {
+  margin-top: 0;
+}
+.link {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: end;
+}
+
+.media {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-deep);
+}
+.mediaInner {
+  position: absolute;
+  inset: -8% 0;
+}
+.img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.2s var(--ease-expo);
+}
+.link:hover .img {
+  transform: scale(1.035);
+}
+
+.meta {
+  display: grid;
+  gap: 14px;
+  align-content: end;
+  padding-bottom: 4px;
+}
+.num {
+  color: var(--muted);
+}
+.title {
+  font-size: var(--fs-h2);
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  line-height: 0.92;
+}
+.title > span {
+  display: block;
+  background: linear-gradient(currentColor, currentColor) left 96% / 0% 0.05em no-repeat;
+  transition: background-size 0.6s var(--ease-expo);
+}
+.link:hover .title > span,
+.link:focus-visible .title > span {
+  background-size: 100% 0.05em;
+}
+.details {
+  display: grid;
+  gap: 4px;
+}
+.details div {
+  display: grid;
+  grid-template-columns: 7.5em 1fr;
+}
+.details dt {
+  color: var(--muted);
+}
+.view {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: max-content;
+  padding-bottom: 3px;
+  border-bottom: 1px solid currentColor;
+}
+.view :global(.icon-arrow) {
+  transition: transform 0.45s var(--ease-expo);
+}
+.link:hover .view :global(.icon-arrow) {
+  transform: translate(2px, -2px);
+}
+
+/* ---------- asymmetric placements ---------- */
+.item[data-layout='wide'] .media {
+  grid-column: 1 / span 8;
+  aspect-ratio: 16 / 10;
+}
+.item[data-layout='wide'] .meta {
+  grid-column: 9 / span 4;
+}
+
+.item[data-layout='tall'] .media {
+  grid-column: 8 / span 4;
+  grid-row: 1;
+  aspect-ratio: 4 / 5;
+}
+.item[data-layout='tall'] .meta {
+  grid-column: 4 / span 4;
+  grid-row: 1;
+  align-content: start;
+  align-self: start;
+  padding-top: 8vh;
+}
+
+.item[data-layout='medium'] .media {
+  grid-column: 2 / span 6;
+  aspect-ratio: 4 / 3;
+}
+.item[data-layout='medium'] .meta {
+  grid-column: 8 / span 4;
+}
+
+.item[data-layout='small'] .media {
+  grid-column: 9 / span 4;
+  grid-row: 1;
+  aspect-ratio: 1;
+}
+.item[data-layout='small'] .meta {
+  grid-column: 4 / span 4;
+  grid-row: 1;
+}
