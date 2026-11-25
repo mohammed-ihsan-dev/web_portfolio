@@ -13,6 +13,19 @@
   pointer-events: auto;
 }
 
+:global(html[data-header='light']) .header {
+  color: #f2f2ee;
+}
+:global(html[data-header='light']) .mark {
+  background: #f2f2ee;
+  color: #0c0c0d;
+}
+:global(html[data-header='light']) .center {
+  color: #a9a9a4;
+}
+.header {
+  transition: color 0.4s var(--ease-out);
+}
 .wordmark {
   justify-self: start;
   display: inline-flex;

@@ -21,6 +21,7 @@ export function CameraRig() {
   const s = useMemo(() => ({ pos: new THREE.Vector3(), target: new THREE.Vector3(), px: 0, py: 0 }), []);
 
   useFrame((_, dt) => {
+    if (solved.finale.active) return; // the finale flies its own camera
     if (camera.fov !== CANON.fov) {
       camera.fov = CANON.fov;
       camera.updateProjectionMatrix();

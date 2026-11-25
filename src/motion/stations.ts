@@ -51,5 +51,6 @@ export function setupStations(root: HTMLElement) {
   });
 
   bus.lookTargets = [...root.querySelectorAll<HTMLElement>('[data-look]')];
+  bus.panelSlots = [...root.querySelectorAll<HTMLElement>('[data-panel-slot]')];
   bus.layoutVersion++;
 }

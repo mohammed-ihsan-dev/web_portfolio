@@ -15,7 +15,9 @@ import { Lighting } from '../lighting/Lighting';
 import { Sky } from './hero/Sky';
 import { HeroScene } from './hero/HeroScene';
 import { WorkspaceProps } from './workspace/WorkspaceProps';
-import { Character } from '../character/Character';
+import { FinaleScene } from './finale/FinaleScene';
+import { ProjectPanels } from './work/ProjectPanels';
+import { CharacterController } from '../character/CharacterController';
 
 const STAGES = 4;
 
@@ -80,9 +82,11 @@ export function SceneRoot() {
       {stage >= 1 && <Sky />}
       {stage >= 2 && <HeroScene />}
       {stage >= 3 && <WorkspaceProps />}
+      {stage >= 3 && <FinaleScene />}
       {stage >= 4 && (
         <Suspense fallback={null}>
-          <Character />
+          <CharacterController />
+          <ProjectPanels />
           <SceneReady />
         </Suspense>
       )}

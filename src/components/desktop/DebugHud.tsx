@@ -22,9 +22,9 @@ export function DebugHud() {
       ref.current.textContent = [
         `fps ${d.fps}  dpr ${d.dpr}  rendering ${d.rendering ? 'yes' : 'idle'}`,
         `hero ${bus.hero.present ? bus.hero.progress.toFixed(3) : '—'}  station ${d.station || '—'}`,
-        `state ${d.state}  model ${hasCharacterModel() ? 'GLB' : 'PLACEHOLDER (2D, no skeleton)'}`,
+        `state ${d.state}  renderer ${hasCharacterModel() ? 'Rigged3D (GLB)' : 'Layered2D / MultiPose (image)'}`,
         `stations ${bus.stations.map((s) => `${s.id}:${s.hero ? 'hero' : s.travel.toFixed(2)}`).join('  ')}`,
-        d.clips ? `\nclips\n${d.clips}` : '\nclips: no model loaded — every state is unavailable',
+        d.clips ? `\n${d.clips}` : '',
       ].join('\n');
     }, 250);
     return () => {

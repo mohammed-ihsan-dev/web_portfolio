@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { hero, intro, person } from '@/data/site';
+import { expertise, hero, intro, person } from '@/data/site';
 import { characterConfig } from '@/config/character.config';
 import { CharacterStation } from '@/components/ui/CharacterStation';
 import { Annotation } from '@/components/ui/Annotation';
@@ -8,10 +8,12 @@ import { ArrowIcon } from '@/components/ui/ArrowIcon';
 import styles from './HeroIntro.module.css';
 
 /**
- * Scenes 02–04 — hero, scroll transition, personal intro.
+ * Storyboard 1–10 (proof of concept) — seated in the palm with a laptop, the
+ * scroll transition (close lid, stand, leap), landing in front of the
+ * oversized "Creative Developer." typography.
  *
  * 3D mode: one tall section with two sticky 100vh stages.
- *   back  (z1): CSS sky fallback + oversized name the character stands in front of
+ *   back  (z1): CSS sky fallback + oversized title the character stands in front of
  *   front (z3): headline, labels, intro copy
  * The shared canvas (z2) renders between them. Progress through the section
  * drives the whole sequence (src/motion/scenes/heroIntro.ts).
@@ -20,16 +22,17 @@ import styles from './HeroIntro.module.css';
  * screens — hero, then intro — with the character cut-out in both.
  */
 export function HeroIntro() {
-  const nameChars = Array.from(person.name);
+  const title = `${expertise.titleTop} ${expertise.titleBottom}`;
+  const titleChars = Array.from(title);
   return (
     <section className={styles.section} data-scene="hero-intro" aria-labelledby="hero-title">
       {/* ---------- back layer ---------- */}
       <div className={styles.back}>
         <div className={styles.intro} data-station-section>
           <h2 className={styles.name} data-intro-name>
-            <span className="sr-only">{person.name}</span>
+            <span className="sr-only">{title}</span>
             <span className={styles.nameRow} aria-hidden="true">
-              {nameChars.map((c, i) =>
+              {titleChars.map((c, i) =>
                 c === ' ' ? (
                   <span key={i} className={styles.space} />
                 ) : (
@@ -82,7 +85,7 @@ export function HeroIntro() {
           </h1>
 
           <div className={styles.annotation} data-hero-fade>
-            <Annotation lines={hero.annotation} />
+            <Annotation lines={hero.annotation} direction="right" />
           </div>
 
           <div className={styles.heroCopy} data-hero-fade>
@@ -114,6 +117,14 @@ export function HeroIntro() {
             {intro.aboutCta}
             <ArrowIcon direction="right" />
           </TransitionLink>
+          <ol className={styles.caps} aria-label="Capabilities">
+            {expertise.capabilities.map((c) => (
+              <li key={c.title} data-intro-copy>
+                <span className={styles.capTitle}>{c.title}</span>
+                <span className={styles.capDesc}>{c.description}</span>
+              </li>
+            ))}
+          </ol>
           <dl className={`mono ${styles.meta}`}>
             {intro.meta.map((m) => (
               <div key={m.label} data-intro-copy>

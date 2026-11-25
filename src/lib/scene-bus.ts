@@ -44,6 +44,16 @@ export const bus = {
     /** 0 → 1 entrance after the preloader (sky fade-in, character settle). */
     entrance: 0,
   },
+  finale: {
+    present: false,
+    visible: false,
+    /** 0 → 1 scrubbed progress of the MacBook → footer sequence. */
+    progress: 0,
+    /** The footer element mapped onto the 3D display. */
+    screen: null as HTMLElement | null,
+  },
+  /** Project panel slots in Selected Work (3D panels land on these links). */
+  panelSlots: [] as HTMLElement[],
   stations: [] as StationRecord[],
   /** Elements the character may glance at (e.g. the project in view). */
   lookTargets: [] as HTMLElement[],

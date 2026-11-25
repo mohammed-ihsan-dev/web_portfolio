@@ -92,8 +92,8 @@
 
 .annotation {
   position: absolute;
-  left: 41%;
-  top: 59%;
+  left: 27%;
+  top: 47%;
 }
 
 .heroCopy {
@@ -172,12 +172,12 @@
   position: absolute;
   left: 0;
   right: 0;
-  top: 41vh;
+  top: 47vh;
   display: flex;
   justify-content: center;
-  font-size: var(--fs-display);
+  font-size: clamp(64px, 8.7vw, 190px);
   font-weight: 500;
-  letter-spacing: var(--track-display);
+  letter-spacing: -0.055em;
   line-height: 0.8;
   white-space: nowrap;
 }
@@ -200,9 +200,9 @@
   width: 0.2em;
 }
 .introStation {
-  left: 50%;
-  bottom: 3vh;
-  height: 82vh;
+  left: 47%;
+  bottom: 4vh;
+  height: 80vh;
   transform: translateX(-50%);
 }
 
@@ -239,6 +239,26 @@
 }
 .aboutLink:hover {
   border-bottom-color: transparent;
+}
+.caps {
+  position: absolute;
+  right: var(--pad);
+  top: calc(47vh + clamp(64px, 8.7vw, 190px) * 0.95);
+  display: grid;
+  gap: 12px;
+  text-align: right;
+  font-size: var(--fs-small);
+  line-height: 1.25;
+}
+.caps li {
+  display: grid;
+}
+.capTitle {
+  font-weight: 650;
+}
+.capDesc {
+  color: var(--ink-soft);
+  font-weight: 500;
 }
 .meta {
   position: absolute;

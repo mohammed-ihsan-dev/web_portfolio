@@ -3,11 +3,10 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
-import { hasCharacterModel } from '@/config/character.config';
 import { solved } from '../../director/director';
 import { heroLayout } from './heroLayout';
 import { buildHandGeometry, POINTING, RELAXED_OPEN } from './handGeometry';
-import { Laptop, LAPTOP } from './Laptop';
+import { MacBook, MACBOOK } from '../../props/MacBook';
 
 /** Plaster/stone look: subtle procedural grain + cavity darkening, no textures to download. */
 function createStoneMaterial() {
@@ -65,7 +64,6 @@ export function HeroScene() {
 
   const L = heroLayout.lowerHand;
   const U = heroLayout.upperHand;
-  const model = hasCharacterModel();
 
   useFrame((state) => {
     const g = root.current;
@@ -81,10 +79,13 @@ export function HeroScene() {
     upper.current!.position.y += Math.sin(t * 0.45) * 0.03;
     upper.current!.rotation.z = U.rotation[2] + Math.sin(t * 0.35) * 0.012;
 
+    // On his lap while he types; once closed it is set down on the palm beside him.
     const lap = laptop.current!;
-    lap.position.copy(model && solved.character.onHero ? heroLayout.laptop.lap : heroLayout.laptop.palm).add(h.lowerOffset);
-    lap.quaternion.copy(heroLayout.laptop.quaternion);
-    lid.current!.rotation.x = -LAPTOP.openAngle * h.lid;
+    const a = h.laptopAside;
+    lap.position.lerpVectors(heroLayout.laptop.lap, heroLayout.laptop.aside, a).add(h.lowerOffset);
+    lap.position.y += Math.sin(Math.PI * a) * 0.08;
+    lap.quaternion.slerpQuaternions(heroLayout.laptop.lapQuaternion, heroLayout.laptop.asideQuaternion, a);
+    lid.current!.rotation.x = -MACBOOK.openAngle * h.lid;
   });
 
   return (
@@ -109,7 +110,7 @@ export function HeroScene() {
         castShadow
         receiveShadow
       />
-      <Laptop ref={laptop} lidRef={lid} />
+      <MacBook ref={laptop} lidRef={lid} />
     </group>
   );
 }

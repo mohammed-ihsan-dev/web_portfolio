@@ -44,7 +44,7 @@ export const hero = {
 };
 
 export const intro = {
-  kicker: '(01) Hello',
+  kicker: `(01) ${person.name}`,
   bio: 'Placeholder bio. A short paragraph about who you are, what you build and how you like to work. Keep it to three or four lines.',
   meta: [
     { label: 'Based in', value: person.location },

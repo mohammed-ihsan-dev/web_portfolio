@@ -11,7 +11,8 @@
     "test:e2e": "playwright test",
     "assets:cutout": "node scripts/cutout-character.mjs assets-src/character-reference.png public/images/character",
     "assets:placeholders": "node scripts/generate-placeholders.mjs",
-    "assets:basis": "mkdir -p public/basis && cp node_modules/three/examples/jsm/libs/basis/basis_transcoder.* public/basis/"
+    "assets:basis": "mkdir -p public/basis && cp node_modules/three/examples/jsm/libs/basis/basis_transcoder.* public/basis/",
+    "assets:character": "node scripts/prepare-character.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",

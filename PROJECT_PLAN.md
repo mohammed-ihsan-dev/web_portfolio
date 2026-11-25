@@ -121,6 +121,8 @@ Desktop-only code (GSAP, Lenis, three, R3F) is behind `import()` gates that run 
 
 ## 5. Character asset pipeline (no Blender)
 
+> **Superseded for the current phase by `ZERO_BUDGET_PLAN.md`.** Paid image-to-3D exports are off the table, so the character is now a hybrid 2.5D image character. The GLB path below still works if a free rigged model ever becomes available.
+
 1. **Model.** Image-to-3D in **Tripo** or **Meshy** from `assets-src/character-reference.png`. Generate an A-pose variant first: front view, arms 30–45° from the body, feet shoulder-width. Target 25–40 k triangles and one 2048² PBR texture set (base colour + normal + ORM). Check the face, curly hair silhouette, hoodie drawstrings and sneakers against the reference before rigging.
 2. **Rig.** Use the generator's built-in humanoid auto-rig, or upload to **Mixamo** (FBX/OBJ). Keep the Mixamo bone names (`mixamorig:Hips` … `mixamorig:Head`) so every clip shares one skeleton.
 3. **Facial.** If the generator outputs blendshapes, keep `eyeBlinkLeft` / `eyeBlinkRight` (ARKit names) or a single `blink`. Otherwise blinking is disabled; no fake eyelids are drawn.
@@ -241,11 +243,12 @@ Targets (desktop): 60 fps on capable hardware, LCP < 2.5 s, CLS < 0.1, INP < 200
 
 ## 10. Known limitations (current phase)
 
-1. **There is no 3D character yet.** Every station shows a **2D cut-out of the reference render on a camera-facing plane**. It does not sit, walk, wave, blink or turn. It glides between stations, and the hero shows it standing on the hand beside the laptop instead of seated with the laptop on its lap. The animation system is wired and resolves to the placeholder until a GLB is configured.
+1. **There is no 3D character model.** The character is a hybrid 2.5D image character: your render on a 2D skeletal mesh. It sits, stands, crouches, hops and breathes, but it can't turn or show its back. See `ZERO_BUDGET_PLAN.md` §8.
 2. The reference **screenshot** was not attached. The layout follows the brief + the live site, so compositions the brief describes but the live site lacks (SELECTED/WORK split, Off the Screen, HELLO) are original interpretations.
-3. Hands, laptop, desk and chair are procedural stand-ins, sculptural rather than photoreal.
+3. Hands, MacBook (Air-like, with logo/notch/keyboard/trackpad/hinge), desk and chair are procedural models, sculptural rather than photoreal.
 4. Placeholder imagery (projects, photos, experiments) is generated abstract artwork, clearly labelled as mock.
 5. Cross-browser results are limited to what was actually run (see README). Safari/Firefox on real hardware, Windows, and real mobile devices still need a pass.
 6. Mobile home LCP measures 2.6–2.7 s under Lighthouse's simulated slow 4G, just above the 2.5 s target (desktop and the other mobile routes meet it).
 7. The home HTML contains both the desktop and the mobile tree. CSS shows the right one from the first paint, and the inactive tree is removed after hydration. Crawlers that don't run JavaScript therefore see two `h1`s on `/`. If that matters, switch to user-agent routing in `proxy.ts` (which makes `/` dynamic).
-8. With the 2D placeholder, the "walk" between stations is a glide. Foot-speed sync, sitting, waving, cursor look-at and blinking only become visible with a rigged model.
+8. Entrances use a **frontal** walk cycle (stride, hip sway, arm swing); other station changes still hop. A side-view walk, pushing the desk, chair turns, arms crossed and pencil writing need dedicated pose images (02, 05, 06, 07, 11) and are not implemented.
+9. The sunset → northern-lights sky transition is not implemented yet.

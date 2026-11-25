@@ -45,7 +45,7 @@
 .station {
   left: 42%;
   bottom: 0.66em;
-  height: 38vh;
+  height: 44vh;
   transform: translateX(-50%);
 }
 .note {
@@ -96,4 +96,58 @@
 }
 .cta:hover .ctaChip {
   width: 52px;
+}
+
+/* Project panel slots: where the 3D panels settle (and the real links). */
+.slots {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.slot {
+  position: absolute;
+}
+.slot[data-i='0'] { left: 2%; top: 22vh; width: 17vw; }
+.slot[data-i='1'] { left: 22%; top: 15vh; width: 12vw; }
+.slot[data-i='2'] { left: 37%; top: 25vh; width: 15vw; }
+.slot[data-i='3'] { left: 55%; top: 13vh; width: 11vw; }
+.slot[data-i='0'] .slotMedia { aspect-ratio: 16 / 10; }
+.slot[data-i='1'] .slotMedia { aspect-ratio: 4 / 5; }
+.slot[data-i='2'] .slotMedia { aspect-ratio: 4 / 3; }
+.slot[data-i='3'] .slotMedia { aspect-ratio: 1; }
+.slotLink {
+  display: block;
+  pointer-events: auto;
+}
+.slotMedia {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  background: var(--bg-deep);
+}
+.slotImg {
+  object-fit: cover;
+  transition: opacity 0.6s var(--ease-out);
+}
+.slotCaption {
+  display: block;
+  margin-top: 8px;
+  color: var(--ink-soft);
+  transition: color 0.3s var(--ease-out);
+}
+.slotLink:hover .slotCaption,
+.slotLink:focus-visible .slotCaption {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+/* 3D mode: the WebGL panel is the picture; the link stays on top, transparent. */
+:global(html[data-experience='desktop-3d'][data-scene='ready']) .slotMedia {
+  background: transparent;
+}
+:global(html[data-experience='desktop-3d'][data-scene='ready']) .slotImg {
+  opacity: 0;
+}
+:global(html[data-experience='desktop-3d']) .slotCaption {
+  opacity: var(--panel-caption, 0);
 }

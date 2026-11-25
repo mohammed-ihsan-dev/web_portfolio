@@ -48,6 +48,8 @@ export function WorkspaceProps() {
       foot: new RoundedBoxGeometry(0.16, 0.012, 0.22, 2, 0.005),
       keyboard: new RoundedBoxGeometry(0.13, 0.012, 0.42, 2, 0.004),
       mug: new THREE.CylinderGeometry(0.04, 0.036, 0.095, 20),
+      panelFront: new RoundedBoxGeometry(0.022, 0.62, 1.3, 2, 0.008),
+      mouse: new RoundedBoxGeometry(0.1, 0.03, 0.062, 3, 0.014),
       plane: new THREE.PlaneGeometry(1, 1),
     };
   }, []);
@@ -91,15 +93,19 @@ export function WorkspaceProps() {
         <mesh key={`${x}${z}`} geometry={r.leg} material={r.steel} position={[x, (DESK_H - 0.035) / 2, z]} />
       ))}
 
-      {/* monitor faces the chair (-X) */}
-      <group position={[DESK_X + 0.2, DESK_H, -0.05]}>
+      {/* modesty panel: the desk's front, between him and the camera (hides the legs) */}
+      <mesh geometry={r.panelFront} material={r.oak} position={[DESK_X + 0.33, DESK_H - 0.34, 0]} />
+
+      {/* monitor beside him, turned toward the chair */}
+      <group position={[DESK_X + 0.02, DESK_H, 0.46]} rotation={[0, -0.69, 0]}>
         <mesh geometry={r.foot} material={r.plastic} position={[0, 0.006, 0]} />
         <mesh geometry={r.neck} material={r.plastic} position={[0.02, 0.12, 0]} />
         <mesh geometry={r.monitor} material={r.plastic} position={[0, 0.39, 0]} />
         <mesh geometry={r.panel} material={r.screen} position={[-0.0165, 0.39, 0]} rotation={[0, -Math.PI / 2, 0]} />
       </group>
-      <mesh geometry={r.keyboard} material={r.plastic} position={[DESK_X - 0.15, DESK_H + 0.006, -0.05]} />
-      <mesh geometry={r.mug} material={r.ceramic} position={[DESK_X - 0.05, DESK_H + 0.048, 0.44]} />
+      <mesh geometry={r.keyboard} material={r.plastic} position={[DESK_X - 0.17, DESK_H + 0.006, 0.02]} />
+      <mesh geometry={r.mouse} material={r.plastic} position={[DESK_X - 0.16, DESK_H + 0.015, -0.3]} />
+      <mesh geometry={r.mug} material={r.ceramic} position={[DESK_X + 0.08, DESK_H + 0.048, -0.5]} />
 
       {/* chair */}
       <mesh geometry={r.seat} material={r.fabric} position={[0, 0.46, 0]} />

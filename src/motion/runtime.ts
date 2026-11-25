@@ -16,6 +16,7 @@ import { scroll } from '@/lib/scroll';
 import { setupReveals } from './reveals';
 import { setupStations } from './stations';
 import { setupHeroIntro } from './scenes/heroIntro';
+import { setupFinale } from './scenes/finale';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -101,6 +102,7 @@ export function createMotionRuntime(): MotionRuntime {
       bus.route = path;
       const context = gsap.context(() => {
         cleanups.push(setupHeroIntro(root));
+        cleanups.push(setupFinale(root));
         setupStations(root);
       }, root);
       ctx = context;
@@ -114,6 +116,7 @@ export function createMotionRuntime(): MotionRuntime {
       ctx = null;
       bus.stations = [];
       bus.lookTargets = [];
+      bus.panelSlots = [];
       bus.hero.present = false;
       bus.hero.visible = false;
     },

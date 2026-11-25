@@ -1,0 +1,168 @@
+/* Base: a plain dark footer (mobile, static desktop, no JS). */
+.section {
+  position: relative;
+}
+.stage {
+  position: relative;
+}
+.prelude {
+  display: none;
+}
+.screen {
+  --fg: #f2f2ee;
+  --fg-soft: #a9a9a4;
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto auto;
+  gap: 24px;
+  min-height: 100svh;
+  padding: calc(var(--header-h) + 16px) var(--pad) var(--pad);
+  background: #0c0c0d;
+  color: var(--fg);
+}
+.screen ::selection {
+  background: var(--lime);
+  color: #0c0c0d;
+}
+.screen :focus-visible {
+  outline-color: var(--lime);
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--fg-soft);
+}
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--fg);
+}
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #555;
+}
+.dot[data-open='true'] {
+  background: #9bd35a;
+  box-shadow: 0 0 0 3px rgb(155 211 90 / 0.22);
+}
+
+.title {
+  align-self: end;
+  font-size: clamp(56px, 12.5vw, 250px);
+  font-weight: 500;
+  letter-spacing: -0.065em;
+  line-height: 0.82;
+  text-transform: uppercase;
+  margin-left: -0.05em;
+}
+.lead {
+  font-size: var(--fs-h3);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--fg-soft);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 24px;
+  padding-top: 20px;
+  border-top: 1px solid rgb(242 242 238 / 0.16);
+}
+.address {
+  font-size: var(--fs-h3);
+  font-weight: 500;
+  letter-spacing: -0.035em;
+}
+.address:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.14em;
+  text-decoration-thickness: 1px;
+}
+.talk {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 14px;
+  border: 1px solid rgb(242 242 238 / 0.4);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  transition: background 0.3s var(--ease-out), color 0.3s var(--ease-out);
+}
+.talk:hover {
+  background: var(--fg);
+  color: #0c0c0d;
+}
+
+.bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px 24px;
+  color: var(--fg-soft);
+}
+.bottom button {
+  color: var(--fg);
+}
+.actions button {
+  color: #0c0c0d;
+}
+.socials {
+  display: flex;
+  gap: 20px;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--fg);
+}
+.socials a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.socials a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* ==========================================================================
+   Desktop 3D: tall section, sticky stage; the footer is mapped onto the 3D
+   display by FinaleScene (transform written per frame).
+   ========================================================================== */
+:global(html[data-experience='desktop-3d']) .section {
+  height: 420vh;
+}
+:global(html[data-experience='desktop-3d']) .stage {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-front);
+  height: 100vh;
+  overflow: hidden;
+}
+:global(html[data-experience='desktop-3d']) .prelude {
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: calc(var(--header-h) + 5vh);
+  transform: translateX(-50%);
+  color: var(--muted);
+}
+:global(html[data-experience='desktop-3d']) .screen {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  transform-origin: 0 0;
+  visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform;
+}
