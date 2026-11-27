@@ -71,7 +71,7 @@ async function ProjectContent({ params }: { params: Promise<{ slug: string }> })
           name: project.title,
           description: project.summary,
           genre: project.category,
-          dateCreated: project.year,
+          ...(project.year ? { dateCreated: project.year } : {}),
           url: `${SITE_URL}/work/${project.slug}`,
           image: `${SITE_URL}${project.cover.src}`,
           creator: { '@type': 'Person', name: person.name, url: SITE_URL },
@@ -97,14 +97,22 @@ async function ProjectContent({ params }: { params: Promise<{ slug: string }> })
             <dt>Role</dt>
             <dd>{project.role}</dd>
           </div>
+          {project.location && (
+            <div>
+              <dt>Location</dt>
+              <dd>{project.location}</dd>
+            </div>
+          )}
           <div>
-            <dt>Year</dt>
-            <dd>{project.year}</dd>
+            <dt>{project.year ? 'Year' : 'Type'}</dt>
+            <dd>{project.year ?? project.type}</dd>
           </div>
-          <div>
-            <dt>Stack</dt>
-            <dd>{project.stack.join(', ')}</dd>
-          </div>
+          {project.stack.length > 0 && (
+            <div>
+              <dt>Stack</dt>
+              <dd>{project.stack.join(', ')}</dd>
+            </div>
+          )}
         </dl>
       </header>
 
@@ -132,6 +140,13 @@ async function ProjectContent({ params }: { params: Promise<{ slug: string }> })
               {para}
             </p>
           ))}
+          {project.highlights && project.highlights.length > 0 && (
+            <ul className={`small ${styles.highlights}`} aria-label="Highlights" data-reveal="fade">
+              {project.highlights.map((h) => (
+                <li key={h}>{h}</li>
+              ))}
+            </ul>
+          )}
           {project.liveUrl && (
             <a href={project.liveUrl} target="_blank" rel="noreferrer noopener" className={`small ${styles.live}`}>
               Visit live site <ArrowIcon />

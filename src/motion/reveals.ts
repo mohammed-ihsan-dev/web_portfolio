@@ -90,7 +90,8 @@ export function setupReveals(root: HTMLElement, ctx: gsap.Context): () => void {
     });
   }));
 
-  els('[data-reveal="image"]').forEach((el) => queue(el, () => {
+  // Project images in the Selected Work flight are revealed by the flight itself (scenes/selectedWorkFlight).
+  els('[data-reveal="image"]:not([data-flight-media])').forEach((el) => queue(el, () => {
     const img = el.querySelector('img');
     const tl = gsap.timeline({ scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' } });
     tl.fromTo(el, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.4, ease: 'expo.inOut', clearProps: 'clipPath' });

@@ -15,7 +15,6 @@ import {
   CROUCH,
   LAND,
   LAUNCH,
-  PREP_STAND,
   PRESENT,
   SEATED_TYPING,
   STAND,
@@ -29,8 +28,6 @@ import { heroLayout } from '../scenes/hero/heroLayout';
 
 /* ---------- extra presets used only here ---------- */
 const SEATED_REST: RigPose = { ...SEATED_TYPING, armOutL: -0.05, armOutR: -0.05, foreOutL: -0.3, foreOutR: -0.3, foreScaleL: 0.74, foreScaleR: 0.74 };
-/** Reaching to set the closed laptop down at his side (screen-right arm). */
-const ASIDE: RigPose = { ...SEATED_REST, armOutR: 0.2, foreOutR: 0.04, foreScaleR: 0.86, upperScaleR: 0.95, headTilt: -0.03, headX: 0.006 };
 const RISE: RigPose = { ...STAND, bodyScaleY: 0.97, thighScaleL: 0.66, thighScaleR: 0.66, thighOutL: 0.07, thighOutR: 0.07, shinInL: 0.05, shinInR: 0.05, armOutL: 0.05, armOutR: 0.05 };
 const REACH: RigPose = { ...STAND, armOutL: 0.2, armOutR: 0.2, foreOutL: 0.12, foreOutR: 0.12, bodyScaleY: 1.01 };
 
@@ -57,16 +54,19 @@ export function createImageFrame(): ImageFrame {
   };
 }
 
+/** Half-risen from the finger (the seated render hands over to the base pose here). */
+const RISE0: RigPose = { ...RISE, bodyScaleY: 0.965, thighScaleL: 0.6, thighScaleR: 0.6, thighOutL: 0.08, thighOutR: 0.08, shinInL: 0.06, shinInR: 0.06, armOutR: 0.14, foreOutR: 0.1, headY: -0.008 };
+/** Rising while the right hand sets the closed MacBook down on the palm. */
+const RISE_ASIDE: RigPose = { ...RISE, armOutR: 0.2, foreOutR: 0.06, upperScaleR: 0.95, headTilt: -0.02 };
+
 const HERO_KEYS = (() => {
   const T = heroLayout.timeline;
   const [l0, l1] = T.leap;
   const span = l1 - l0;
   return [
-    [0, SEATED_TYPING],
-    [T.aside[0], SEATED_TYPING],
-    [(T.aside[0] + T.aside[1]) / 2, ASIDE],
-    [T.stand[0], PREP_STAND],
-    [(T.stand[0] + T.stand[1]) / 2, RISE],
+    [0, RISE0],
+    [T.toBase[0], RISE0],
+    [(T.aside[0] + T.aside[1]) / 2, RISE_ASIDE],
     [T.stand[1], STAND],
     [T.crouch[1], CROUCH],
     [l0 + span * 0.12, LAUNCH],
@@ -80,23 +80,27 @@ const HERO_KEYS = (() => {
 
 const vTmp = new THREE.Vector3();
 const vStand = new THREE.Vector3();
+const ZERO = new THREE.Vector3();
 
 /**
- * Hero: seated in the palm with the laptop → close it → set it aside → stand →
- * crouch → leap → land on the station `landingFeet` (already in world space).
+ * Hero, base-pose half: the hero renders (seated → closing → rising) own the
+ * character until `T.toBase`; from there the rigged base pose finishes standing
+ * up (the MacBook in his hand is set on the palm), stands, crouches, leaps and lands on the station
+ * `landingFeet` (already in world space).
  */
-export function heroFrame(p: number, time: number, handOffset: THREE.Vector3, landingFeet: THREE.Vector3, out: ImageFrame) {
+export function heroFrame(p: number, time: number, handOffset: THREE.Vector3, landingFeet: THREE.Vector3, out: ImageFrame, baseOffset: THREE.Vector3 = ZERO) {
   const T = heroLayout.timeline;
   const leg = baseLegLength();
 
   sampleKeys(HERO_KEYS, p, easeInOutSine, out.rig);
   const jumping = p > T.crouch[0] && p < T.recover[0];
-  addTyping(out.rig, time, 1 - range(p, T.lid[0] - 0.01, T.lid[0] + 0.05));
   addIdle(out.rig, time, jumping ? 0.12 : p < T.stand[1] ? 0.6 : 1);
   copyRigPose(STAND, out.overlay);
   addIdle(out.overlay, time, jumping ? 0.1 : 0.8);
 
-  const seatHips = vTmp.copy(heroLayout.seatHips).add(handOffset);
+  // At the hand-over the hips are where the render's hips were, already lifting off the finger.
+  // At the hand-over the hips are where the rising render's hips are.
+  const seatHips = vTmp.copy(heroLayout.risingHips).add(handOffset).add(baseOffset);
   const standFeet = vStand.copy(heroLayout.standFeet).add(handOffset);
   out.feet.copy(standFeet);
   const [l0, l1] = T.leap;
@@ -104,8 +108,8 @@ export function heroFrame(p: number, time: number, handOffset: THREE.Vector3, la
   const tt = range(p, l0, l1);
 
   if (p < l0) {
-    // Seated → standing in the palm.
-    out.anchor = 1 - smoothstep(range(p, T.stand[0], T.stand[1] - 0.01));
+    // Rising off the finger → standing in the palm.
+    out.anchor = 1 - smoothstep(range(p, T.toBase[0], T.stand[1] - 0.01));
     out.hips.copy(seatHips);
   } else {
     // Ballistic hop: feet ease across, arc up; hips lead while airborne.
@@ -131,11 +135,37 @@ export function heroFrame(p: number, time: number, handOffset: THREE.Vector3, la
   }
 
   /* dedicated pose images, when they exist */
-  if (p < T.stand[0]) out.want = pickPose(['02-laptop-working']);
-  else if (p < l0) out.want = pickPose(['03-preparing-to-stand']);
+  if (p < l0) out.want = pickPose(['03-preparing-to-stand']);
   else if (tt > 0.12 && tt < 0.88) out.want = pickPose(['04-jumping', '09-superhero-jump']);
   else if (tt >= 0.88 && p < T.recover[1]) out.want = pickPose(['07-landing']);
   else out.want = pickPose(['08-confident-standing']);
+  return out;
+}
+
+const TAKEOFF_KEYS = [
+  [0, STAND],
+  [0.22, CROUCH],
+  [0.32, LAUNCH],
+  [0.46, AIR],
+  [1, AIR],
+] as const;
+
+/** Selected Work: leaves the WORK letters — crouch, launch, and straight up out of frame. */
+export function takeoffFrame(t: number, time: number, feet: THREE.Vector3, rise: number, out: ImageFrame) {
+  const leg = baseLegLength();
+  sampleKeys(TAKEOFF_KEYS, t, easeInOutSine, out.rig);
+  addIdle(out.rig, time, 0.15);
+  copyRigPose(STAND, out.overlay);
+  addIdle(out.overlay, time, 0.1);
+  out.feet.copy(feet);
+  out.feet.y += rise;
+  out.anchor = range(t, 0.28, 0.36);
+  out.hips.copy(out.feet).y += leg * 0.94;
+  const air = range(t, 0.3, 0.6);
+  out.shadow.pos.copy(feet);
+  out.shadow.opacity = 0.36 * (1 - air);
+  out.shadow.scale = 0.85 * (1 - 0.5 * air);
+  out.want = t > 0.3 ? pickPose(['04-jumping', '09-superhero-jump']) : BASE_POSE;
   return out;
 }
 

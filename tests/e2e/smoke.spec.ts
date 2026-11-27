@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { collectErrors } from './helpers';
 
-const routes = ['/', '/work', '/work/northbound', '/about', '/playground', '/contact'];
+const routes = ['/', '/work', '/work/zinda-learn', '/about', '/playground', '/contact'];
 
 for (const route of routes) {
   test(`${route} renders without errors or horizontal overflow`, async ({ page }) => {
@@ -23,10 +23,10 @@ test('unknown routes return 404', async ({ page }) => {
 });
 
 test('SEO: metadata, canonical, structured data, sitemap, robots', async ({ page, request }) => {
-  await page.goto('/work/northbound');
-  await expect(page).toHaveTitle(/Northbound/);
+  await page.goto('/work/zinda-learn');
+  await expect(page).toHaveTitle(/Zinda Learn/);
   expect(await page.locator('meta[name="description"]').getAttribute('content')).toBeTruthy();
-  expect(await page.locator('link[rel="canonical"]').getAttribute('href')).toContain('/work/northbound');
+  expect(await page.locator('link[rel="canonical"]').getAttribute('href')).toContain('/work/zinda-learn');
   expect(await page.locator('meta[property="og:image"]').count()).toBeGreaterThan(0);
   const ld = await page.locator('script[type="application/ld+json"]').allTextContents();
   expect(ld.join(' ')).toContain('"CreativeWork"');
@@ -34,7 +34,7 @@ test('SEO: metadata, canonical, structured data, sitemap, robots', async ({ page
 
   const sitemap = await request.get('/sitemap.xml');
   expect(sitemap.ok()).toBeTruthy();
-  expect(await sitemap.text()).toContain('/work/northbound');
+  expect(await sitemap.text()).toContain('/work/zinda-learn');
   const robots = await request.get('/robots.txt');
   expect(await robots.text()).toContain('Sitemap:');
 });
@@ -46,7 +46,7 @@ test('content is server-rendered (crawlable without JavaScript)', async ({ brows
   const html = await page.content();
   expect(html).toContain('Building Experiences');
   expect(html).toContain('Selected');
-  expect(html).toContain('Northbound');
+  expect(html).toContain('Halima Trading');
   // The preloader must never block a no-JS visitor.
   await expect(page.locator('h1:visible').first()).toBeVisible();
   await ctx.close();

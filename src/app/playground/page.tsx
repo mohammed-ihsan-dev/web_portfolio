@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   title: seo.pages.playground.title,
   description: seo.pages.playground.description,
   alternates: { canonical: '/playground' },
+  // Mock experiments for now: kept out of the navigation, sitemap and search results.
+  robots: { index: false, follow: true },
   openGraph: { title: seo.pages.playground.title, description: seo.pages.playground.description, url: '/playground' },
 };
 

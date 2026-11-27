@@ -81,6 +81,8 @@ export function HeroScene() {
 
     // On his lap while he types; once closed it is set down on the palm beside him.
     const lap = laptop.current!;
+    // The seated render carries its own MacBook; the 3D one takes over at the hand-over.
+    lap.visible = h.laptopVisible;
     const a = h.laptopAside;
     lap.position.lerpVectors(heroLayout.laptop.lap, heroLayout.laptop.aside, a).add(h.lowerOffset);
     lap.position.y += Math.sin(Math.PI * a) * 0.08;

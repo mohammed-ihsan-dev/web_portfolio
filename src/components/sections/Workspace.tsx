@@ -3,9 +3,10 @@ import { CharacterStation } from '@/components/ui/CharacterStation';
 import styles from './Workspace.module.css';
 
 /**
- * Scene 07 — a minimal studio. The desk, chair and monitor are rendered by the
- * shared canvas at this station (prop="desk"); the character walks in from the
- * left and sits down to work once a rigged model with sit/typing clips exists.
+ * Scene 07 — the studio. The shared canvas draws the desk set at this station
+ * (prop="desk"): the character walks in from the left, stops at the chair, sits
+ * and works at the monitor. The station box's bottom-centre is the floor under
+ * the chair; its height is his standing height.
  */
 export function Workspace() {
   return (
@@ -24,22 +25,16 @@ export function Workspace() {
         </p>
 
         <div className={styles.lists}>
-          <div data-reveal="fade">
-            <p className="mono muted">Tools</p>
-            <ul className={styles.list}>
-              {workspace.tools.map((t) => (
-                <li key={t}>{t}</li>
-              ))}
-            </ul>
-          </div>
-          <div data-reveal="fade">
-            <p className="mono muted">Experiments</p>
-            <ul className={styles.list}>
-              {workspace.experiments.map((t) => (
-                <li key={t}>{t}</li>
-              ))}
-            </ul>
-          </div>
+          {workspace.lists.map((list) => (
+            <div key={list.label} data-reveal="fade">
+              <p className="mono muted">{list.label}</p>
+              <ul className={styles.list}>
+                {list.items.map((t) => (
+                  <li key={t}>{t}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
 
         <CharacterStation
@@ -51,10 +46,10 @@ export function Workspace() {
           state="typing"
           enter="left"
           facing={125}
-          travelStart="top 80%"
-          travelEnd="top top"
+          travelStart="top 72%"
+          travelEnd="top 24%"
         />
-        <span className={`mono ${styles.caption}`}>Fig. 04 — Desk, chair, monitor (procedural)</span>
+        <span className={`mono ${styles.caption}`}>Fig. 04 — The desk</span>
       </div>
     </section>
   );

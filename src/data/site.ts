@@ -1,116 +1,120 @@
 /**
- * Central identity + copy. Every value below is a PLACEHOLDER.
- * Replace in place; nothing else in the codebase hardcodes personal details.
+ * Central identity + copy. Edit in place; nothing else in the codebase
+ * hardcodes personal details.
  */
 import type { Capability, ExperienceEntry, NavItem, OffScreenItem, SocialLink } from '@/types/content';
 
 export const person = {
-  name: 'Your Name',
-  firstName: 'Your',
-  lastName: 'Name',
-  initials: 'YN',
-  role: 'Creative Developer',
-  location: 'City, Country',
-  timezoneLabel: 'GMT +0:00',
-  email: 'hello@yourdomain.com',
+  name: 'Mohammed Ihsan',
+  displayName: 'Ihsan',
+  firstName: 'Mohammed',
+  lastName: 'Ihsan',
+  initials: 'MI',
+  /** Short title for tight UI (header, preloader); `title` is the full one. */
+  role: 'Creative Web Developer',
+  title: 'Creative Web Developer & Full Stack MERN Developer',
+  location: 'Kerala, India',
+  locationFull: 'Mannarkkad, Palakkad, Kerala, India',
+  timezoneLabel: 'IST, GMT +5:30',
+  email: 'mohammed.ihsan.dev@gmail.com',
+  phone: { label: '+91 85906 98873', href: 'tel:+918590698873' },
   availability: {
     open: true,
-    label: 'Available for new projects',
-    detail: 'From Q1 — placeholder',
+    label: 'Open to work',
   },
 } as const;
 
 export const socials: SocialLink[] = [
-  { label: 'GitHub', href: 'https://github.com/', handle: '@username' },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/', handle: '/in/username' },
-  { label: 'Instagram', href: 'https://www.instagram.com/', handle: '@username' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/itsihsaney', handle: '/in/itsihsaney' },
+  { label: 'GitHub', href: 'https://github.com/mohammed-ihsan-dev', handle: '@mohammed-ihsan-dev' },
 ];
 
 export const navigation: NavItem[] = [
   { label: 'Home', href: '/' },
   { label: 'Work', href: '/work' },
   { label: 'About', href: '/about' },
-  { label: 'Playground', href: '/playground' },
+  // Playground (/playground) is hidden until there are real experiments to show.
   { label: 'Contact', href: '/contact' },
 ];
 
 export const hero = {
   headline: ['Building Experiences', 'Beyond the Ordinary.'],
-  label: 'Creative Developer',
+  label: person.role,
   intro:
-    'Placeholder intro. I design and build interactive websites where motion, 3D and type carry the story. Replace with your own two lines.',
+    'Creative Web Developer and Full Stack MERN Developer in Kerala, India — building interactive websites and scalable web applications where creative design meets efficient engineering.',
   annotation: ['That’s me,', 'shipping something.'],
   scrollCue: 'Scroll',
 };
 
 export const intro = {
   kicker: `(01) ${person.name}`,
-  bio: 'Placeholder bio. A short paragraph about who you are, what you build and how you like to work. Keep it to three or four lines.',
+  bio: 'I build modern websites, interactive digital experiences and scalable web applications. Currently a Web Developer at Zorx Interactive Agency, I bring frontend creativity and backend functionality together — responsive, visually engaging and fast.',
   meta: [
     { label: 'Based in', value: person.location },
-    { label: 'Focus', value: 'Interactive web' },
-    { label: 'Status', value: 'Independent' },
+    { label: 'Focus', value: 'Creative web · MERN' },
+    { label: 'Currently', value: 'Zorx Interactive Agency' },
   ],
   aboutCta: 'More about me',
 };
 
 export const expertise = {
-  kicker: '(02) Expertise',
+  kicker: '(02) What I do',
   titleTop: 'Creative',
   titleBottom: 'Developer.',
-  paragraph:
-    'Placeholder. One paragraph on how design and engineering meet in your work. Avoid listing tools here; the list on the right does that.',
+  paragraph: 'Where creativity meets code.',
   capabilities: [
-    { title: 'Creative Web Development', description: 'Art-directed sites, built by hand.' },
-    { title: 'Interactive Experiences', description: 'Scroll stories, motion systems, play.' },
-    { title: 'Frontend Engineering', description: 'Typed, tested, fast in production.' },
-    { title: 'WebGL & 3D', description: 'Three.js scenes that load quickly.' },
-    { title: 'UI/UX Implementation', description: 'Pixel-faithful builds of real designs.' },
+    { title: 'Creative Web Development', description: 'Interactive, visually engaging websites with modern web technologies.' },
+    { title: 'Frontend Development', description: 'Responsive, accessible, high-performance user interfaces.' },
+    { title: 'Full Stack Development', description: 'Scalable web applications on the MERN stack.' },
+    { title: 'Interactive Web Experiences', description: 'Scroll-driven animation, cinematic transitions, immersive experiences.' },
+    { title: 'Website Optimization', description: 'Performance, responsiveness, SEO architecture and usability.' },
+    { title: 'Cloud & Deployment', description: 'Deploying and maintaining production-ready web applications.' },
   ] satisfies Capability[],
-  meta: ['Independent', 'Remote friendly', 'Placeholder meta'],
+  meta: [person.location, 'MERN stack', 'Web Developer at Zorx'],
 };
 
 export const selectedWork = {
   kicker: '(03) Selected work',
   top: 'Selected',
   bottom: 'Work',
-  note: 'Mock projects. Every title, image and description here is placeholder content.',
+  note: 'Live client projects — corporate, hospitality and e-learning.',
   cta: 'All work',
 };
 
 export const workspace = {
   kicker: '(04) Workspace',
   title: ['Where the', 'work happens.'],
-  paragraph:
-    'Placeholder. A few lines on your process, experiments and the tools you reach for. The character sits down here once the rigged model is in.',
-  tools: ['TypeScript', 'React / Next.js', 'Three.js / R3F', 'GLSL', 'GSAP', 'Figma'],
-  experiments: ['Shader sketches', 'Scroll prototypes', 'Type studies'],
+  paragraph: 'Where creativity meets code: React and Next.js on the front, Node.js, Express and MongoDB behind, deployed to AWS and Vercel.',
+  lists: [
+    { label: 'Stack', items: ['React.js / Next.js', 'TypeScript', 'Node.js / Express.js', 'MongoDB', 'Tailwind CSS', 'AWS EC2 / Nginx'] },
+    { label: 'Tools', items: ['Git / GitHub', 'VS Code', 'Postman', 'Figma', 'Vercel'] },
+  ],
 };
 
 export const offScreen = {
   kicker: '(05) Off the screen',
   title: ['Off the', 'Screen.'],
-  paragraph: 'Placeholder. What you do when you’re not building — photographs, notes, side projects.',
+  paragraph: 'Beyond client work: community, languages and learning.',
   items: [
     {
-      title: 'Photography',
-      note: 'Placeholder frame. Replace with your own photo.',
-      image: { src: '/images/offscreen/frame-01.webp', width: 1200, height: 1500, alt: 'Placeholder photograph, warm blurred light' },
+      title: 'National Service Scheme',
+      note: 'Volunteer, June 2023 – March 2025. Community development, social service and awareness initiatives.',
+      image: { src: '/images/offscreen/frame-01.webp', width: 1200, height: 1500, alt: 'Abstract artwork, warm blurred light' },
     },
     {
-      title: 'Sketchbook',
-      note: 'Placeholder. Pages, studies, scraps.',
-      image: { src: '/images/offscreen/frame-02.webp', width: 1400, height: 1000, alt: 'Placeholder image, soft grey gradient field' },
+      title: 'Languages',
+      note: 'Malayalam (native), English (professional), Arabic (intermediate).',
+      image: { src: '/images/offscreen/frame-02.webp', width: 1400, height: 1000, alt: 'Abstract artwork, soft grey gradient field' },
     },
     {
-      title: 'Experiments',
-      note: 'Placeholder. Small things made for fun.',
-      image: { src: '/images/offscreen/frame-03.webp', width: 1000, height: 1250, alt: 'Placeholder image, pale green gradient with grain' },
+      title: 'Education',
+      note: 'Bachelor of Computer Applications, IGNOU — August 2025 – August 2028, currently pursuing.',
+      image: { src: '/images/offscreen/frame-03.webp', width: 1000, height: 1250, alt: 'Abstract artwork, pale green gradient with grain' },
     },
     {
-      title: 'Elsewhere',
-      note: 'Placeholder. Travel, walks, places.',
-      image: { src: '/images/offscreen/frame-04.webp', width: 1500, height: 1000, alt: 'Placeholder image, dusk-coloured gradient' },
+      title: 'Always exploring',
+      note: 'Modern web technologies and creative development — motion, 3D and scroll storytelling.',
+      image: { src: '/images/offscreen/frame-04.webp', width: 1500, height: 1000, alt: 'Abstract artwork, dusk-coloured gradient' },
     },
   ] satisfies OffScreenItem[],
 };
@@ -118,10 +122,13 @@ export const offScreen = {
 export const contact = {
   kicker: '(06) Contact',
   word: 'Hello',
-  lead: 'Have a project in mind? Placeholder line — say hi.',
+  lead: 'Have an idea? Let’s turn it into an extraordinary digital experience.',
+  heading: 'Open to work.',
+  talkLabel: 'Let’s talk',
   copyLabel: 'Copy email',
   copiedLabel: 'Copied',
   backToTop: 'Back to top',
+  credit: 'Designed & Developed with Creativity.',
   /** Static on purpose: prerendered pages must not read the clock. */
   year: '2026',
 };
@@ -129,35 +136,69 @@ export const contact = {
 export const about = {
   title: ['About'],
   statement:
-    'Placeholder statement. One or two sentences that say what you make and why it matters to the people you make it for.',
+    'I’m Mohammed Ihsan — a Creative Web Developer and Full Stack MERN Developer building modern websites, interactive experiences and scalable web applications.',
   bio: [
-    'Placeholder paragraph one. Background, how you got into building for the web, what kind of work you take on.',
-    'Placeholder paragraph two. How you work with clients and teams, what they can expect, where you’re based.',
+    'I specialise in work that combines creative design with efficient engineering. As a Web Developer at Zorx Interactive Agency, I build responsive, visually engaging and performance-driven websites for business clients.',
+    'With a background in full-stack development, I bring frontend creativity and backend functionality together. I’m pursuing a Bachelor of Computer Applications at IGNOU while continuing to explore modern web technologies and creative development.',
   ],
   experience: [
-    { role: 'Role title', organisation: 'Studio / company name', period: '20XX — Present', note: 'Placeholder' },
-    { role: 'Role title', organisation: 'Studio / company name', period: '20XX — 20XX', note: 'Placeholder' },
-    { role: 'Role title', organisation: 'Studio / company name', period: '20XX — 20XX', note: 'Placeholder' },
+    {
+      role: 'Web Developer',
+      organisation: 'Zorx Interactive Agency',
+      period: 'Sep 2026 — Present',
+      location: 'Mannarkkad, Palakkad, Kerala',
+      note: 'Current',
+      highlights: [
+        'Develop modern, responsive websites for business clients.',
+        'Build interactive and creative digital experiences.',
+        'Collaborate with branding, design and marketing teams.',
+        'Optimise website performance, responsiveness and SEO.',
+        'Manage deployment and technical maintenance.',
+        'Translate creative concepts into functional websites.',
+      ],
+    },
+    {
+      role: 'Software Developer Intern',
+      organisation: 'Bridgeon Solutions',
+      period: 'Jul 2025 — Aug 2026',
+      location: 'Calicut, Kerala',
+      note: '',
+      highlights: [
+        'Developed responsive web applications with React.js and TypeScript.',
+        'Created reusable, scalable UI components.',
+        'Integrated RESTful APIs and backend services.',
+        'Collaborated on backend development with Node.js and Express.js.',
+        'Improved application performance and cross-device usability.',
+      ],
+    },
   ] satisfies ExperienceEntry[],
+  education: [{ title: 'Bachelor of Computer Applications (BCA)', place: 'Indira Gandhi National Open University (IGNOU)', period: 'Aug 2025 — Aug 2028', note: 'Currently pursuing' }],
+  volunteering: [{ title: 'Volunteer', place: 'National Service Scheme (NSS)', period: 'Jun 2023 — Mar 2025', note: 'Community development, social service, awareness initiatives and collaborative volunteer activities.' }],
+  languages: [
+    { name: 'Malayalam', level: 'Native' },
+    { name: 'English', level: 'Professional' },
+    { name: 'Arabic', level: 'Intermediate' },
+  ],
   skills: {
-    Build: ['TypeScript', 'React', 'Next.js', 'Node.js'],
-    Motion: ['GSAP', 'ScrollTrigger', 'Lenis', 'CSS animation'],
-    '3D': ['Three.js', 'React Three Fiber', 'GLSL', 'glTF pipelines'],
-    Design: ['Figma', 'Typography', 'Interaction design'],
+    Frontend: ['HTML5', 'CSS3', 'JavaScript', 'TypeScript', 'React.js', 'Next.js', 'Tailwind CSS', 'Bootstrap', 'Zustand'],
+    Backend: ['Node.js', 'Express.js', 'MongoDB', 'REST APIs', 'JWT authentication', 'MVC architecture'],
+    'Cloud & deployment': ['AWS EC2', 'Nginx', 'Firebase', 'Vercel'],
+    Tools: ['Git', 'GitHub', 'VS Code', 'Postman', 'Figma'],
+    'Core capabilities': ['MERN stack development', 'Responsive web design', 'API integration', 'State management', 'Performance optimisation', 'SEO-friendly development', 'Agile / Scrum'],
   } as Record<string, string[]>,
 };
 
 export const seo = {
   siteName: `${person.name} — ${person.role}`,
   titleTemplate: `%s — ${person.name}`,
-  defaultTitle: `${person.name} — ${person.role}`,
+  defaultTitle: `${person.name} — ${person.title}`,
   description:
-    'Placeholder description. Portfolio of a creative developer building interactive, art-directed websites with WebGL and motion.',
+    'Mohammed Ihsan is a Creative Web Developer and Full Stack MERN Developer in Kerala, India, building interactive websites and scalable web applications.',
   ogImage: { src: '/og.jpg', width: 1200, height: 630, alt: `${person.name}, ${person.role}` },
   pages: {
-    work: { title: 'Work', description: 'Placeholder. Selected projects and case studies.' },
-    about: { title: 'About', description: 'Placeholder. Background, experience and skills.' },
-    playground: { title: 'Playground', description: 'Placeholder. Creative experiments and prototypes.' },
-    contact: { title: 'Contact', description: 'Placeholder. Get in touch about a project.' },
+    work: { title: 'Work', description: 'Selected client projects by Mohammed Ihsan: corporate, hospitality and e-learning websites.' },
+    about: { title: 'About', description: 'Mohammed Ihsan — experience, skills, education and languages.' },
+    playground: { title: 'Playground', description: 'Creative experiments and prototypes.' },
+    contact: { title: 'Contact', description: 'Get in touch with Mohammed Ihsan about a website or web application.' },
   },
 };

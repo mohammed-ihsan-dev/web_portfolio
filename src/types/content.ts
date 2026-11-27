@@ -28,10 +28,16 @@ export interface Project {
   title: string;
   category: string;
   role: string;
-  year: string;
+  /** Omitted when not confirmed (never invented). */
+  year?: string;
+  /** e.g. 'Live client project'. */
+  type: string;
   client: string;
+  location?: string;
   summary: string;
   description: string[];
+  highlights?: string[];
+  /** Empty when not confirmed. */
   stack: string[];
   cover: ImageAsset;
   gallery: ImageAsset[];
@@ -46,7 +52,9 @@ export interface ExperienceEntry {
   role: string;
   organisation: string;
   period: string;
+  location?: string;
   note: string;
+  highlights?: string[];
 }
 
 export interface Experiment {

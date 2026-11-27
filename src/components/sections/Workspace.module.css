@@ -56,9 +56,9 @@
 
 /* Floor point under the chair; height = standing apparent height. */
 .station {
-  left: 63vw;
-  bottom: 13vh;
-  height: 58vh;
+  left: 62vw;
+  bottom: 9vh;
+  height: 66vh;
   transform: translateX(-50%);
 }
 

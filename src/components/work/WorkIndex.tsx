@@ -21,7 +21,7 @@ export function WorkIndex({ projects }: { projects: Project[] }) {
             <span className={`mono ${styles.num}`}>({String(i + 1).padStart(2, '0')})</span>
             <span className={styles.title}>{p.title}</span>
             <span className={`mono ${styles.cat}`}>{p.category}</span>
-            <span className={`mono ${styles.year}`}>{p.year}</span>
+            <span className={`mono ${styles.year}`}>{p.year ?? p.type}</span>
             <span className={styles.thumb}>
               <Image
                 src={p.cover.src}

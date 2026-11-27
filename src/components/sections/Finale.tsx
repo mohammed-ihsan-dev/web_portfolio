@@ -29,9 +29,9 @@ export function Finale() {
           </div>
 
           <h2 id="finale-title" className={styles.title}>
-            Open to work.
+            {contact.heading}
           </h2>
-          <p className={styles.lead}>Let’s build something extraordinary.</p>
+          <p className={styles.lead}>{contact.lead}</p>
 
           <div className={styles.actions}>
             <a className={styles.address} href={`mailto:${person.email}`}>
@@ -39,7 +39,7 @@ export function Finale() {
             </a>
             <CopyEmail email={person.email} label={contact.copyLabel} copiedLabel={contact.copiedLabel} />
             <a className={styles.talk} href={`mailto:${person.email}?subject=Let%E2%80%99s%20talk`}>
-              Let’s talk <ArrowIcon />
+              {contact.talkLabel} <ArrowIcon />
             </a>
           </div>
 
@@ -54,7 +54,7 @@ export function Finale() {
               ))}
             </ul>
             <p className="mono">
-              © {contact.year} {person.name}
+              © {contact.year} {person.name}. {contact.credit}
             </p>
             <BackToTop label={contact.backToTop} />
           </div>

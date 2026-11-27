@@ -23,7 +23,7 @@ export function GroundShadow() {
     const m = mesh.current;
     if (!m) return;
     const s = solved.character.shadow;
-    m.visible = solved.character.show && s.opacity > 0.01;
+    m.visible = (solved.character.show || solved.puppet.id === 'walking') && s.opacity > 0.01;
     if (!m.visible) return;
     m.position.copy(s.pos);
     m.scale.set(0.95 * s.scale, 1, 0.42 * s.scale);

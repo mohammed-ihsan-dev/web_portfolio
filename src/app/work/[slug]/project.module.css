@@ -66,6 +66,13 @@
   gap: 18px;
   max-width: 52ch;
 }
+.highlights {
+  display: grid;
+  gap: 6px;
+  padding-left: 1.1em;
+  list-style: square;
+  color: var(--ink-soft);
+}
 .live {
   display: inline-flex;
   gap: 8px;

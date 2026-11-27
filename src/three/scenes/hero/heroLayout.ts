@@ -5,6 +5,7 @@
  */
 import * as THREE from 'three';
 import { characterConfig } from '@/config/character.config';
+import { anchorOffset } from '../../puppet/puppets';
 import { PALM_TOP } from './handGeometry';
 
 type V3 = [number, number, number];
@@ -56,15 +57,47 @@ const palm = (x: number, z: number, lift = 0) => new THREE.Vector3(x, PALM_TOP +
 const seatGround = palm(0.66, 0.34, -0.02);
 // Pushed toward the camera so the hanging shins draw in front of the finger edge.
 const seatHips = seatGround.clone().add(new THREE.Vector3(0, 0.3, 0.36));
-/** Where his feet land when he stands up (back in the palm). */
-const standFeet = palm(0.14, 0.06, -0.01);
+
+/**
+ * The hero renders (seated with the MacBook → closing it → rising) share one seat
+ * point on top of the finger, slightly toward the camera so the hanging legs read
+ * in front of it. The closing and rising renders come from one scene and camera,
+ * so their own anchors (hips, feet, the held laptop) follow from the same point.
+ */
+const puppetSeat = seatGround.clone().add(new THREE.Vector3(0.0, 0.012, 0.12));
+const off = (id: 'hero-macbook' | 'hero-rising', to: string) => {
+  const [x, y] = anchorOffset(id, 'seat', to);
+  return new THREE.Vector3(x, y, 0);
+};
+/** Where the rising render's hips are: the base pose takes over from here. */
+const risingHips = puppetSeat.clone().add(off('hero-rising', 'hips'));
+/** The rising render's feet: he finishes standing up here. */
+const risingFeet = puppetSeat.clone().add(off('hero-rising', 'feet'));
+/** The MacBook held at his side in the rising render: the 3D MacBook takes over exactly here. */
+const heldLaptop = puppetSeat.clone().add(off('hero-rising', 'laptopCentre')).add(new THREE.Vector3(0, 0, 0.06));
+/** Closed, standing on its hinge edge, lid (logo) toward the camera, turned and leaning as in the render (top tipped back a little so the lid catches the key light). */
+const heldQuaternion = new THREE.Quaternion()
+  .setFromAxisAngle(Y, 0.5)
+  .multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), -0.28))
+  .multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), 0.15 + Math.PI))
+  .multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI / 2));
 
 export const heroLayout = {
   /** Scroll progress windows (0–1 of the hero section). See ZERO_BUDGET_PLAN.md §6. */
   timeline: {
-    lid: [0.05, 0.17] as const,
-    aside: [0.16, 0.25] as const,
-    stand: [0.24, 0.35] as const,
+    /** Typing in the seated render, then he stops: hands come off the keys, head lifts. */
+    settle: [0.08, 0.12] as const,
+    /** Seated render → closing render (he closes the MacBook; head and eyes lift). */
+    toClosing: [0.12, 0.16] as const,
+    /** Closing render → rising render (off the finger, MacBook in one hand). */
+    toRising: [0.2, 0.24] as const,
+    /** Rising render → base pose; the 3D MacBook takes over in his hand. */
+    toBase: [0.265, 0.3] as const,
+    /** GLB path only: the lid closes. */
+    lid: [0.12, 0.16] as const,
+    /** The 3D MacBook goes from his hand down onto the palm. */
+    aside: [0.29, 0.345] as const,
+    stand: [0.275, 0.35] as const,
     crouch: [0.35, 0.39] as const,
     /** Feet travel from the palm to the landing station; launch and touch-down are the first/last 3 %. */
     leap: [0.39, 0.63] as const,
@@ -80,13 +113,16 @@ export const heroLayout = {
   upperHand,
   seatGround,
   seatHips,
-  standFeet,
+  /** He stands up in place where the rising render's feet are, then crouches and leaps from there. */
+  standFeet: risingFeet,
+  puppetSeat,
+  risingHips,
   /** Rigged GLB only: root (feet) position while seated. */
   seatRoot: seatHips.clone().setY(seatHips.y - characterConfig.seat.height),
   laptop: {
-    /** On his lap, screen facing him, lid toward the camera. */
-    lap: seatHips.clone().add(new THREE.Vector3(0.0, 0.06, 0.27)),
-    lapQuaternion: new THREE.Quaternion().setFromAxisAngle(Y, Math.PI),
+    /** In his hand at his side, exactly where the rising render holds it. */
+    lap: heldLaptop,
+    lapQuaternion: heldQuaternion,
     /** Set down on the palm beside him once closed. */
     aside: palm(0.3, -0.2, 0.004),
     asideQuaternion: handQuat.clone().multiply(new THREE.Quaternion().setFromAxisAngle(Y, Math.PI - 0.5)),

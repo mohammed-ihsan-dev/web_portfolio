@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Generates clearly-labelled MOCK imagery (abstract compositions, no stock,
- * no people) for projects, "off the screen" photos, playground experiments and
+ * Generates clearly-labelled abstract / MOCK imagery (abstract compositions, no stock,
+ * no people) for "off the screen" artwork, playground experiments and
  * the Open Graph card. Replace these files with real assets later.
  *
  *   node scripts/generate-placeholders.mjs
@@ -29,48 +29,8 @@ function svg(w, h, body, defs = '') {
   <rect width='${w}' height='${h}' filter='url(#g)'/></svg>`;
 }
 
-/* ---------- project compositions ---------- */
-const projectArt = {
-  northbound: (w, h, v) => svg(w, h, `
-    <rect width='${w}' height='${h}' fill='#1d3584'/>
-    <circle cx='${w * (0.64 + v * 0.1)}' cy='${h * 0.62}' r='${h * 0.52}' fill='#f2efe6'/>
-    <rect x='0' y='${h * 0.7}' width='${w}' height='${h * 0.3}' fill='#1d3584' opacity='0.92'/>
-    ${Array.from({ length: 9 }, (_, i) => `<line x1='0' x2='${w}' y1='${h * (0.72 + i * 0.03)}' y2='${h * (0.72 + i * 0.03)}' stroke='#f2efe6' stroke-opacity='${0.5 - i * 0.05}' stroke-width='1.5'/>`).join('')}
-    <text x='${w * 0.05}' y='${h * 0.17}' ${sans} font-size='${h * 0.12}' font-weight='600' letter-spacing='-4' fill='#f2efe6'>N—B</text>
-    ${label(w, h, 'MOCK PROJECT / NORTHBOUND / PLACEHOLDER', '#f2efe6')}`),
-  'paper-atlas': (w, h, v) => svg(w, h, `
-    <rect width='${w}' height='${h}' fill='#ebe5d8'/>
-    ${Array.from({ length: 6 }, (_, i) => `<rect x='${w * (0.12 + i * 0.035)}' y='${h * (0.14 + i * 0.03)}' width='${w * 0.62}' height='${h * 0.62}' fill='#f8f5ee' stroke='#1a1a1a' stroke-opacity='0.18'/>`).join('')}
-    <circle cx='${w * (0.78 - v * 0.2)}' cy='${h * 0.28}' r='${w * 0.05}' fill='#d4472f'/>
-    ${Array.from({ length: 12 }, (_, i) => `<rect x='${w * 0.36}' y='${h * (0.36 + i * 0.026)}' width='${w * (0.3 - (i % 4) * 0.04)}' height='${h * 0.008}' fill='#1a1a1a' opacity='0.55'/>`).join('')}
-    ${label(w, h, 'MOCK PROJECT / PAPER ATLAS / PLACEHOLDER', '#1a1a1a')}`),
-  'soft-machines': (w, h, v) => svg(w, h, `
-    <rect width='${w}' height='${h}' fill='#d8d2ee'/>
-    <g filter='url(#blur)'>
-      <circle cx='${w * (0.32 + v * 0.1)}' cy='${h * 0.42}' r='${h * 0.3}' fill='#f3a6c8'/>
-      <circle cx='${w * 0.66}' cy='${h * 0.6}' r='${h * 0.34}' fill='#8fa8ff'/>
-      <circle cx='${w * 0.52}' cy='${h * 0.24}' r='${h * 0.18}' fill='#fff6d8'/>
-    </g>
-    <rect x='${w * 0.08}' y='${h * 0.08}' width='${w * 0.84}' height='${h * 0.84}' fill='none' stroke='#151515' stroke-opacity='0.35'/>
-    ${label(w, h, 'MOCK PROJECT / SOFT MACHINES / PLACEHOLDER', '#151515')}`, `<filter id='blur'><feGaussianBlur stdDeviation='${Math.round(w * 0.045)}'/></filter>`),
-  'field-studio': (w, h, v) => svg(w, h, `
-    <rect width='${w}' height='${h}' fill='#646b40'/>
-    ${Array.from({ length: 5 }, (_, r) => Array.from({ length: 5 }, (_, c) => `<rect x='${w * (0.14 + c * 0.15)}' y='${h * (0.14 + r * 0.15)}' width='${w * 0.11}' height='${w * 0.11}' fill='${(r + c + Math.round(v * 3)) % 4 === 0 ? '#e4edb4' : 'none'}' stroke='#e4edb4' stroke-opacity='0.55'/>`).join('')).join('')}
-    ${label(w, h, 'MOCK PROJECT / FIELD STUDIO / PLACEHOLDER', '#e4edb4')}`),
-  'low-orbit': (w, h, v) => svg(w, h, `
-    <rect width='${w}' height='${h}' fill='#16171b'/>
-    ${Array.from({ length: 7 }, (_, i) => `<ellipse cx='${w * 0.5}' cy='${h * 0.52}' rx='${w * (0.1 + i * 0.07)}' ry='${h * (0.04 + i * 0.03)}' fill='none' stroke='#cfd6e6' stroke-opacity='${0.55 - i * 0.06}' transform='rotate(${-12 + v * 8} ${w * 0.5} ${h * 0.52})'/>`).join('')}
-    <circle cx='${w * 0.5}' cy='${h * 0.52}' r='${h * 0.09}' fill='#e9e6dd'/>
-    <circle cx='${w * (0.78 - v * 0.1)}' cy='${h * 0.43}' r='${h * 0.018}' fill='#e4edb4'/>
-    ${label(w, h, 'MOCK PROJECT / LOW ORBIT / PLACEHOLDER', '#cfd6e6')}`),
-  'quiet-index': (w, h, v) => svg(w, h, `
-    <rect width='${w}' height='${h}' fill='#f2f0ea'/>
-    ${Array.from({ length: 16 }, (_, i) => `<rect x='${w * 0.1}' y='${h * (0.12 + i * 0.045)}' width='${w * (0.2 + ((i * 37) % 50) / 100)}' height='${h * 0.012}' fill='#121212' opacity='${i === 5 + Math.round(v * 4) ? 1 : 0.22}'/>`).join('')}
-    <rect x='${w * 0.66}' y='${h * 0.58}' width='${w * 0.22}' height='${w * 0.22}' fill='#e4edb4'/>
-    ${label(w, h, 'MOCK PROJECT / QUIET INDEX / PLACEHOLDER', '#121212')}`),
-};
+/* Project images are real screenshots now: scripts/capture-projects.mjs (npm run assets:projects). */
 
-/* ---------- "off the screen" photo placeholders: soft out-of-focus light ---------- */
 const photo = (w, h, colors, tag) =>
   svg(w, h, `
     <rect width='${w}' height='${h}' fill='${colors[0]}'/>
@@ -79,7 +39,7 @@ const photo = (w, h, colors, tag) =>
       <circle cx='${w * 0.72}' cy='${h * 0.62}' r='${Math.min(w, h) * 0.38}' fill='${colors[2]}'/>
       <circle cx='${w * 0.55}' cy='${h * 0.2}' r='${Math.min(w, h) * 0.14}' fill='${colors[3]}'/>
     </g>
-    ${label(w, h, `PLACEHOLDER PHOTO / ${tag}`, '#111')}`, `<filter id='soft'><feGaussianBlur stdDeviation='${Math.round(Math.min(w, h) * 0.09)}'/></filter>`);
+    ${label(w, h, `ABSTRACT / ${tag}`, '#111')}`, `<filter id='soft'><feGaussianBlur stdDeviation='${Math.round(Math.min(w, h) * 0.09)}'/></filter>`);
 
 /* ---------- playground experiments ---------- */
 const experiments = [
@@ -98,22 +58,7 @@ async function write(file, svgString, w, h, format = 'webp') {
   await img.toFile(file);
 }
 
-const projects = [
-  ['northbound', 2000, 1250],
-  ['paper-atlas', 1500, 1875],
-  ['soft-machines', 1800, 1350],
-  ['field-studio', 1400, 1400],
-  ['low-orbit', 2000, 1250],
-  ['quiet-index', 1500, 1875],
-];
-
-for (const [slug, w, h] of projects) {
-  const art = projectArt[slug];
-  await write(`${OUT}/images/projects/${slug}/cover.webp`, art(w, h, 0), w, h);
-  await write(`${OUT}/images/projects/${slug}/shot-1.webp`, art(1600, 1000, 0.6), 1600, 1000);
-  await write(`${OUT}/images/projects/${slug}/shot-2.webp`, art(1200, 1500, 1), 1200, 1500);
-}
-
+// [slug, cover width, cover height, abstract art style, label]
 const photos = [
   ['frame-01', 1200, 1500, ['#e9d6c2', '#f4b37a', '#c76d4c', '#fff3d6'], 'WARM LIGHT'],
   ['frame-02', 1400, 1000, ['#d9dadb', '#f2f2f0', '#9a9ca0', '#ffffff'], 'GREY FIELD'],
@@ -142,8 +87,8 @@ for (let i = 0; i < experiments.length; i++) {
   const bg = svg(w, h, `
     <rect width='${w}' height='${h}' fill='#fbfbf9'/>
     ${Array.from({ length: 7 }, (_, i) => `<line x1='${40 + i * 186.7}' x2='${40 + i * 186.7}' y1='0' y2='${h}' stroke='#0c0c0d' stroke-opacity='0.06'/>`).join('')}
-    <text x='48' y='86' ${mono} font-size='16' letter-spacing='2' fill='#74747a'>CREATIVE DEVELOPER — PLACEHOLDER</text>
-    <text x='40' y='470' ${sans} font-size='150' font-weight='600' letter-spacing='-8' fill='#0c0c0d'>Your Name</text>
+    <text x='48' y='86' ${mono} font-size='16' letter-spacing='2' fill='#74747a'>MOHAMMED IHSAN — CREATIVE WEB DEVELOPER — KERALA, INDIA</text>
+    <text x='34' y='470' ${sans} font-size='230' font-weight='600' letter-spacing='-12' fill='#0c0c0d'>Ihsan.</text>
     <rect x='48' y='520' width='210' height='34' fill='#e4edb4'/>
     <text x='60' y='543' ${mono} font-size='14' letter-spacing='1' fill='#0c0c0d'>PORTFOLIO — 2026</text>`);
   const base = await sharp(Buffer.from(bg)).png().toBuffer();

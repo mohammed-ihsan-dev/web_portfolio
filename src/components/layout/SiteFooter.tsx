@@ -26,7 +26,7 @@ export function SiteFooter() {
           ))}
         </ul>
         <p className="mono muted">
-          © {contact.year} {person.name}
+          © {contact.year} {person.name}. {contact.credit}
         </p>
         <BackToTop label={contact.backToTop} />
       </div>

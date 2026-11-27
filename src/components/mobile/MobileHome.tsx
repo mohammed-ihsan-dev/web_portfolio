@@ -17,8 +17,10 @@ export function MobileHome() {
     <div className={styles.root}>
       <section className={styles.hero} aria-labelledby="m-hero-title">
         <p className="mono muted">{person.role}</p>
+        {/* Oversized display name; the heading still reads as the full name. */}
         <h1 id="m-hero-title" className={styles.name}>
-          {person.name}
+          <span className="sr-only">{person.firstName} </span>
+          {person.displayName}
         </h1>
         <div className={styles.figure}>
           <div className={styles.sky} aria-hidden="true" />
@@ -67,7 +69,7 @@ export function MobileHome() {
                   <span className="mono muted">({String(i + 1).padStart(2, '0')})</span>
                   <span className={styles.projectTitle}>{p.title}</span>
                   <span className="mono muted">
-                    {p.category} — {p.year}
+                    {p.category} — {p.year ?? p.type}
                   </span>
                 </div>
               </TransitionLink>

@@ -33,7 +33,9 @@ export function setupHeroIntro(root: HTMLElement): () => void {
   const entrance = gsap.timeline({ paused: true });
   entrance
     .from(hlLines, { yPercent: 112, duration: 1.35, ease: 'expo.out', stagger: 0.1 }, 0.1)
-    .from(fades, { autoAlpha: 0, y: 14, duration: 1.1, ease: 'expo.out', stagger: 0.08 }, 0.45)
+    // A separate property (CSS var → filter/translate) from the scroll timeline's opacity/transform,
+    // so a visitor who scrolls during the entrance can't leave these stuck visible.
+    .fromTo(fades, { '--hero-enter': 0 }, { '--hero-enter': 1, duration: 1.1, ease: 'expo.out', stagger: 0.08 }, 0.45)
     .from(cue, { autoAlpha: 0, duration: 0.9, ease: 'power2.out' }, 0.9)
     .fromTo(bus.hero, { entrance: 0 }, { entrance: 1, duration: 2.4, ease: 'power3.out' }, 0);
 

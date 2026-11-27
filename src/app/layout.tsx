@@ -47,9 +47,12 @@ const personLd = {
       '@type': 'Person',
       '@id': `${SITE_URL}/#person`,
       name: person.name,
-      jobTitle: person.role,
+      jobTitle: person.title,
       email: `mailto:${person.email}`,
       url: SITE_URL,
+      address: { '@type': 'PostalAddress', addressLocality: 'Mannarkkad', addressRegion: 'Kerala', addressCountry: 'IN' },
+      worksFor: { '@type': 'Organization', name: 'Zorx Interactive Agency' },
+      knowsLanguage: ['ml', 'en', 'ar'],
       sameAs: socials.map((s) => s.href),
     },
     {

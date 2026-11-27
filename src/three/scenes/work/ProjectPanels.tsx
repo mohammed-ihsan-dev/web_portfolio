@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * Selected Work: four project panels (cover images from the mock data) that
+ * Selected Work: one panel per featured project (cover images from the project data) that
  * fly out of the character's hands and settle exactly on their HTML links.
  * Positions come from the director; images use the Next image optimiser.
  */

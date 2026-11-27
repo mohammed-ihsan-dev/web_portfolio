@@ -17,6 +17,8 @@ import { setupReveals } from './reveals';
 import { setupStations } from './stations';
 import { setupHeroIntro } from './scenes/heroIntro';
 import { setupFinale } from './scenes/finale';
+import { setupSelectedWorkFlight } from './scenes/selectedWorkFlight';
+import { requestedPuppets } from '@/three/puppet/runtime';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -25,6 +27,19 @@ export interface MotionRuntime {
   unmountRoute: () => void;
   destroy: () => void;
   lenis: Lenis;
+}
+
+const scrollKey = (path: string) => `scroll:${path}`;
+
+/** On a reload (not a fresh visit) the page comes back where it was; every scene is a pure function of scroll. */
+function reloadScroll(path: string) {
+  try {
+    const nav = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
+    if (nav?.type !== 'reload') return 0;
+    return Number(sessionStorage.getItem(scrollKey(path)) || 0);
+  } catch {
+    return 0;
+  }
 }
 
 function findPageRoot(): HTMLElement | null {
@@ -93,6 +108,15 @@ export function createMotionRuntime(): MotionRuntime {
 
   let ctx: gsap.Context | null = null;
   let cleanups: Array<() => void> = [];
+  let firstMount = true;
+  const onPageHide = () => {
+    try {
+      sessionStorage.setItem(scrollKey(bus.route), String(Math.round(window.scrollY)));
+    } catch {
+      /* storage unavailable: a reload simply starts at the top */
+    }
+  };
+  window.addEventListener('pagehide', onPageHide);
 
   return {
     lenis,
@@ -103,10 +127,23 @@ export function createMotionRuntime(): MotionRuntime {
       const context = gsap.context(() => {
         cleanups.push(setupHeroIntro(root));
         cleanups.push(setupFinale(root));
+        cleanups.push(setupSelectedWorkFlight(root));
         setupStations(root);
       }, root);
       ctx = context;
       ScrollTrigger.refresh();
+      if (firstMount) {
+        firstMount = false;
+        const y = reloadScroll(path);
+        if (y > 0) {
+          // load the renders of every scene up front (the preloader is still up)
+          requestedPuppets.add('flying');
+          requestedPuppets.add('walking');
+          requestedPuppets.add('desk');
+          lenis.scrollTo(Math.min(y, document.documentElement.scrollHeight - window.innerHeight), { immediate: true, force: true });
+          ScrollTrigger.update();
+        }
+      }
       cleanups.push(setupReveals(root, context));
     },
     unmountRoute() {
@@ -125,6 +162,7 @@ export function createMotionRuntime(): MotionRuntime {
       gsap.ticker.remove(tick);
       ScrollTrigger.removeEventListener('refresh', onRefresh);
       window.removeEventListener('pointermove', onPointer);
+      window.removeEventListener('pagehide', onPageHide);
       document.documentElement.removeEventListener('pointerleave', onLeave);
       offPreloader();
       scroll.use(null);

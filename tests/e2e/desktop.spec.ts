@@ -67,9 +67,9 @@ test.describe('desktop experience', () => {
 
     // Mark the document: a full reload would lose this flag.
     await page.evaluate(() => ((window as unknown as { __spa: boolean }).__spa = true));
-    await page.locator('a[href="/work/paper-atlas"]').first().click();
-    await expect(page).toHaveURL(/\/work\/paper-atlas$/);
-    await expect(page.locator('h1:visible')).toContainText('Paper Atlas');
+    await page.locator('a[href="/work/press-d-cafe"]').first().click();
+    await expect(page).toHaveURL(/\/work\/press-d-cafe$/);
+    await expect(page.locator('h1:visible')).toContainText('PRESS D Cafe');
     expect(await page.evaluate(() => (window as unknown as { __spa?: boolean }).__spa)).toBe(true);
     await page.waitForTimeout(800);
     expect(await page.evaluate(() => window.scrollY)).toBeLessThan(5);

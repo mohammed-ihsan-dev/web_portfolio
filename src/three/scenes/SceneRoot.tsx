@@ -18,6 +18,7 @@ import { WorkspaceProps } from './workspace/WorkspaceProps';
 import { FinaleScene } from './finale/FinaleScene';
 import { ProjectPanels } from './work/ProjectPanels';
 import { CharacterController } from '../character/CharacterController';
+import { HeroPuppetPreload, Puppets } from '../puppet/PuppetScene';
 
 const STAGES = 4;
 
@@ -86,6 +87,8 @@ export function SceneRoot() {
       {stage >= 4 && (
         <Suspense fallback={null}>
           <CharacterController />
+          <HeroPuppetPreload />
+          <Puppets />
           <ProjectPanels />
           <SceneReady />
         </Suspense>

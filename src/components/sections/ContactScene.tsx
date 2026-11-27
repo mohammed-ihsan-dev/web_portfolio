@@ -43,6 +43,10 @@ export function ContactScene({ variant = 'home' }: { variant?: 'home' | 'page' }
           {person.email}
         </a>
         <CopyEmail email={person.email} label={contact.copyLabel} copiedLabel={contact.copiedLabel} />
+        <p className="small">
+          <span className="mono muted">Phone </span>
+          <a href={person.phone.href}>{person.phone.label}</a>
+        </p>
       </div>
 
       <ul className={`layer-front ${styles.socials}`}>
@@ -62,10 +66,10 @@ export function ContactScene({ variant = 'home' }: { variant?: 'home' | 'page' }
         <p className={`mono ${styles.status}`}>
           <span className={styles.dot} data-open={person.availability.open} aria-hidden="true" />
           {person.availability.label}
-          <span className="muted"> — {person.availability.detail}</span>
+          <span className="muted"> — {person.location}</span>
         </p>
         <p className="mono muted">
-          © {contact.year} {person.name}
+          © {contact.year} {person.name}. {contact.credit}
         </p>
         <BackToTop label={contact.backToTop} />
       </footer>

@@ -53,8 +53,8 @@ function PoseLayer({ id }: { id: PoseId }) {
     const opacity = id === img.current ? img.mix : id === img.prev ? 1 - img.mix : 0;
     g.visible = c.show && opacity > 0.001;
     if (!g.visible) return;
-    rig.material.opacity = opacity;
-    if (rig.under) (rig.under.material as THREE.MeshBasicMaterial).opacity = opacity;
+    rig.material.opacity = opacity * c.fade;
+    if (rig.under) (rig.under.material as THREE.MeshBasicMaterial).opacity = opacity * c.fade;
     rig.material.userData.smear.value.copy(id === img.current ? img.smear : NO_SMEAR);
 
     // Only the base pose carries the synthesised presets; dedicated pose images get the living layer.

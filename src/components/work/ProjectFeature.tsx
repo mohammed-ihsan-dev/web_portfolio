@@ -8,14 +8,14 @@ import styles from './ProjectFeature.module.css';
 export function ProjectFeature({ project, index }: { project: Project; index: number }) {
   const number = String(index + 1).padStart(2, '0');
   return (
-    <li className={styles.item} data-layout={project.layout} data-side={index % 2 === 0 ? 'left' : 'right'}>
+    <li className={styles.item} data-layout={project.layout} data-side={index % 2 === 0 ? 'left' : 'right'} data-flight-row>
       <TransitionLink
         href={`/work/${project.slug}`}
         className={styles.link}
         flipId={project.slug}
         transitionLabel={project.title}
       >
-        <figure className={`layer-back ${styles.media}`} data-reveal="image" data-look>
+        <figure className={`layer-back ${styles.media}`} data-reveal="image" data-flight-media data-look>
           <div className={styles.mediaInner} data-parallax="7">
             <Image
               src={project.cover.src}
@@ -43,8 +43,8 @@ export function ProjectFeature({ project, index }: { project: Project; index: nu
               <dd>{project.role}</dd>
             </div>
             <div>
-              <dt>Year</dt>
-              <dd>{project.year}</dd>
+              <dt>{project.year ? 'Year' : 'Type'}</dt>
+              <dd>{project.year ?? project.type}</dd>
             </div>
           </dl>
           <span className={`small ${styles.view}`} aria-hidden="true">

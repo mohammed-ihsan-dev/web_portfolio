@@ -111,13 +111,24 @@ Only `crown`/`chin` and the anchor are required. Joints and arm outlines are opt
 | 05 | `…/05-pushing-computer.png` | Side-¾ from his right | Leaning into a push, arms extended | feet | floating desk + PC | Storyboard 5 | ★ |
 | 06 | `…/06-desktop-working.png` | ¾ rear from his left, slightly high | Seated, hands on keyboard/mouse | hips | gaming chair, desk, monitor, tower | Storyboard 7–8 | ★ |
 | 11 | `…/11-writing.png` | ¾ rear from his left, slightly high | Leaning over a desk, pencil in right hand | hips | wooden desk, chair, paper | Storyboard 18–19 | ★ |
-| 12 | `…/12-waving.png` | Front, eye level | Right hand raised, waving | feet | — | Contact greeting | ★ |
+| 12 | Superhero flight | Flying render, mirrored for right-to-left; curved path, acceleration, banking along the climb/dive, depth change, cape flutter (chain bones) | ✅ |
 
 The per-pose prompts are in `assets-src/character/poses.json` → `poses[].prompt`. Each one tells the generator **not** to draw props the scene renders in 3D (laptop, desk, chair). That's what lets the real 3D laptop close on his lap.
 
 **Consistency rules for every pose:** same outfit and lighting, pure white flat background, full figure with margin, no floor shadow on the backdrop, no props unless the prompt says so. If a generator adds a busy or gradient background, the local cut-out can't separate it. That case would need a matting model such as rembg (~176 MB, free, local), which I'd install only with your OK.
 
 ---
+
+### 4b. Intermediate poses that would make the two remaining hand-overs invisible
+
+Same identity, outfit, lighting and render style as the supplied images; transparent or flat background; full figure; at least 1536 px on the long side.
+
+*Update 26 Nov 2026:* 1 and 2 were supplied and are integrated (`hero-closing`, `hero-rising` puppets). 3 and 4 are not planned.
+
+1. **`hero-closing-laptop`** — same camera as `hero-macbook.png`, same seat on the edge, same leg position. Both hands on the lid edge closing the MacBook (lid at ~45°), eyes lifting from the screen to mid-distance, shoulders starting to rise. Bridges typing → the base pose.
+2. **`hero-rising`** — same camera; weight forward, feet planted, hips just off the seat, closed MacBook held in his left hand at his side, looking ahead. Bridges the seated render → standing.
+3. **`desk-sitting-down`** — same camera and set as `desk-working.png` (mirrored: he faces right), hips halfway down to the chair, torso turning from profile to three-quarter toward the monitor, right hand reaching for the keyboard. Bridges the profile walk → seated typing.
+4. *(optional)* **`walking-right-passing`** — same camera as `walking-right.png`, the passing position (legs together under the hips, the swinging knee bent, arms near the sides). Gives the walk real cloth variation between strides.
 
 ## 5. Asset-generation pipeline (implemented)
 
@@ -130,6 +141,19 @@ The per-pose prompts are in `assets-src/character/poses.json` → `poses[].promp
 
 Current output: `01-standing.webp` 544×1516, 64 KB; underlay 11 KB; manifest 13 KB.
 
+### 5b. Dedicated pose renders → layered puppets (`npm run assets:puppets`)
+
+Four renders supplied on 26 Nov 2026 are preserved untouched in `assets-src/character/poses/` (`hero-macbook.png`, `flying.png`, `walking-right.png`, `desk-working.png`). `scripts/prepare-puppets.mjs` reads `assets-src/character/puppets.json` (all coordinates in source pixels) and, per render:
+
+1. mirrors when asked (the desk set faces right, so the walk into the chair keeps one direction; the Apple logo patch is flipped back so it reads correctly);
+2. gently corrects colour toward the reference render with a white-preserving per-channel map fitted on hoodie, skin and trouser medians (white sneakers and highlights never tint);
+3. removes what must not ship: the beige seat under the hero render (colour rule inside a polygon, stricter near the sneakers), the desk render's dark backdrop (outside the kept objects, plus a colour-grown region between the curls), the edge-cut notebook and plant (desk wood continued row by row; the monitor behind the leaves refilled from the monitor);
+4. mattes every cut edge against the local removed colour (`C = a·F + (1−a)·B`, F = the nearest solid pixel, pixels off the F–B line are left alone), so there are no halos or white/dark rims;
+5. splits it into layers (back → front) and paints what each layer hides behind the ones in front (torso under the near arm, the far leg behind the near leg, the empty chair and keyboard under him) so limbs can move without opening holes;
+6. bleeds edge colours into transparent texels (no fringes under GPU filtering), crops each layer, writes WebP, a coverage grid and the manifest.
+
+Output (`public/images/character/puppets/`): hero 436×890 (52 KB), flying 1074×539 (71 KB), walking 5 layers (55 KB total), desk set 4 layers (≈190 KB). Each scene loads only its own layers, ahead of time (the hero's blocks the preloader; the others load while the previous scene plays). The runtime (`src/three/puppet/`) builds one skinned mesh per layer on a shared in-plane skeleton with soft weights; clips are pure functions of time or scroll phase.
+
 ---
 
 ## 6. Scene plan: the 19-step storyboard
@@ -138,20 +162,20 @@ The 19 reference screenshots weren't attached to this conversation. The storyboa
 
 | # | Step | Method | Status |
 |---|---|---|---|
-| 1 | Sitting on the sculptural hand, working on a laptop | Hips on top of the index finger, knees apart, shins dangling in front of the palm (01 rig `SEATED_TYPING` foreshortening), procedural MacBook Air on the lap, typing arm motion → pose 02 when available | ◐ reads as seated from the hero camera; a true side-view seat needs pose 02 |
-| 2 | Stops work, prepares to stand | Lid closes on its hinge (3D), laptop set down on the palm, rig → prepare/rise → pose 03 | ✅ PoC |
+| 1 | Sitting on the sculptural hand, working on a laptop | Dedicated render (seated with its own MacBook) on the index finger; puppet: breathing, typing hand, small head/shoulder motion, eyes stay on the screen | ✅ |
+| 2 | Stops work, closes the MacBook, rises | Seated render: typing stops, hands lift → **closing render** (hands on the shut lid, head lifting) → **rising render** (off the finger, MacBook in one hand) → base pose finishes standing while the 3D MacBook takes over in his hand and is set on the palm. Each hand-over is a short scroll-driven dissolve: the incoming render fades in *under* the outgoing one, then the outgoing one fades out, while both slide so their faces meet | ✅ (a brief soft dissolve at each hand-over is visible if you stop mid-way) |
 | 3 | Jumps away from the hand | Crouch → launch → tuck → land, ballistic arc, dynamic shadow → pose 04 | ✅ PoC |
-| 4 | Approaches the computer setup | Frontal walk cycle (`walkFrame`: stride, hip sway, arm counter-swing, bob) from off-screen to the desk | ◐ frontal gait only (no side-view walk without a walk pose) |
+| 4 | Approaches the computer setup | Walk cycle from the profile render (cut-out layers: legs swap over half a cycle, knee flex, counter-swinging arms, ground contact via forward kinematics; phase from distance so feet don't slide) | ✅ (one key pose: cloth doesn't change between strides) |
 | 5 | Pushes the computer desk | Pose 05 + 3D desk translation synced to scroll | ◻ not done: needs pose 05 (the front-facing photo can't lean into a push) |
 | 6 | Daylight → sunset → northern lights | Sky shader gains sunset palette + aurora layer (ribbon FBM) | ◻ not done yet |
-| 7 | Working at a gaming workstation | Seated behind a camera-facing desk (front modesty panel hides the legs), typing arms, monitor/keyboard/mouse/mug; seat height via `hipsLift` anchor | ◐ works from the front; the chair turn and side view need pose 06 |
-| 8 | Stands up from the chair and walks out | Rig rise + walk (no jump) | ◐ rise is rig-only; pose 06 for a convincing chair exit |
+| 7 | Working at a workstation | The desk render is the set (chair, desk, monitor, mug); seated layer types (both hands), breathes, head nods toward the monitor; procedural desk front so it stands on the floor; slow push-in | ✅ |
+| 8 | Walks to the chair and sits | Faster entrance (48 vh of scroll instead of 80 vh, starting just off the left edge); he slows into the stop, his hips drop behind the desk while his head travels to the seated head; the seated render fades in on top, then the walker fades out underneath (legs hidden by the desk). Seated and typing before the section is fully in view | ◐ profile → three-quarter head turn is a short dissolve (no sitting-down render, by choice) |
 | 9 | Jumps into the white editorial environment | Sky dissolve + hop (same as step 3) | ✅ PoC |
 | 10 | Lands in front of "Creative Developer." | Station landing, title masked in behind him, occlusion via DOM layering | ✅ PoC |
 | 11 | Confident gestures | Rig gestures (small); pose 08 / 10 for big ones; arms crossed needs pose 07 | ◐ rig only |
 | 12 | Superhero jump | Leap onto WORK with a ballistic arc; pose 09 for the classic superhero silhouette | ◐ leap yes, superhero silhouette needs pose 09 |
-| 13 | Enters Selected Work | Hop onto the WORK letters (seated rig) | ✅ (existing site) |
-| 14 | Presents floating project previews | Both arms open (`PRESENT_BOTH`), four textured panels fly from his chest and land exactly on real `<a>` links (clickable, focusable, crawlable) | ✅ (pose 10 would sell it better) |
+| 13 | Enters Selected Work | Leap onto WORK, panels; then crouch → launch → straight up out of frame (base pose) | ✅ |
+| 14 | Flies through the projects | One pass per project row, alternating L→R / R→L (any number of rows); direction changes happen off-screen; each project image opens behind him (same path function drives both); last pass dives out toward the Workspace | ✅ |
 | 15 | Closed silver laptop | Procedural MacBook-Air-like model: Apple-logo lid, notch, bezel, keyboard, trackpad, hinge (`src/three/props/MacBook.tsx`), shared by hero and finale | ✅ |
 | 16 | Opens the lid | Hinge rotation synced to scroll; camera orbits from the top view to the front | ✅ |
 | 17 | Into the screen → footer | The real HTML footer ("Open to work.", email, Copy Email, Let's Talk, socials, Back to Top) is mapped onto the display with a CSS homography; the camera flies in and the transform eases to identity — no cut, no fade | ✅ |
@@ -163,6 +187,8 @@ All steps share the deterministic scroll timeline (forward and reverse), one can
 ---
 
 ## 7. Performance (measured, production build, this machine)
+
+- **Whole page with the new renders (26 Nov 2026), Chromium on Metal GPU, DPR 2, 1440×900, steady 26 s scroll top → footer:** 60.0 fps over 1,604 frames; median 16.7 ms, p95 16.7 ms, p99 16.8 ms, none over 20 ms; JS heap 21 MB. Per section: hero 60.1, Selected Work + flight 60.0, Workspace 60.0, rest 60.0.
 
 - **Hero sequence, Chromium on Metal GPU, devicePixelRatio 2:** 60.0 fps over 417 frames, median 16.7 ms, p95 16.8 ms, none over 20 ms; JS heap ~15 MB.
 - **Character cost:** 1 skinned mesh (4,560 triangles after empty cells are culled) + 1 underlay mesh (446), 2 textures (75 KB total), 16 bones. Pose textures load only when the choreography asks for them, at most 3 mounted at once.
@@ -181,4 +207,6 @@ All steps share the deterministic scroll timeline (forward and reverse), one can
 6. **Procedural props** (hands, laptop, desk) are stylised stand-ins. Free CC0 models can replace them later (log them in `ASSETS_ATTRIBUTION.md`).
 7. **Not possible with the current single photo (need pose images or a real skeleton):** pushing the desk, turning to/from the chair, arms crossed, pencil writing, finger-level typing, a side-view walk, a true side-view seat. These are *not* implemented and are not faked; they are listed in the storyboard as ◻.
 8. **The 3D camera stays canonical (z 10, fov 30) wherever the character stands on DOM text**, so DOM ↔ WebGL alignment holds; three-quarter camera angles are only used in self-contained scenes (hero, finale).
-9. The 19 storyboard screenshots weren't received. Storyboard matching relies on your list plus my live-site captures.
+9. **Dedicated renders are single key poses.** The puppets move limbs, cape and head in-plane; cloth folds, lighting and facial expression stay as rendered. The walk is a cut-out cycle from one stride (convincing in motion, not a captured walk).
+10. **Hand-overs between renders are short dissolves, not cuts:** seated → closing → rising → base pose in the hero, walker → seated render at the desk. The incoming render fades in under the outgoing one and both slide so their faces meet, so there is no see-through moment and no face in two places; stopped exactly mid-way, a soft blend of the two images is visible for a few percent of scroll.
+11. The 19 storyboard screenshots weren't received. Storyboard matching relies on your list plus my live-site captures.

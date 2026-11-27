@@ -20,7 +20,8 @@ import { heroLayout } from '../scenes/hero/heroLayout';
 import { BASE_POSE, getPose, type PoseId } from '../character2d/poses';
 import { readyPoses, requestedPoses } from '../character2d/runtime';
 import { PRESENT_BOTH, STAND, copyRigPose } from '../character2d/rigPose';
-import { createImageFrame, heroFrame, stationFrame, travelFrame, walkFrame } from './choreography2d';
+import { createImageFrame, heroFrame, stationFrame, takeoffFrame, travelFrame, walkFrame } from './choreography2d';
+import { deskReady, deskSet, placeDeskSet, puppet, puppetUnder, requestAhead, resetPuppetFrame, solveFlight, solveHeroPuppet, solveWalker, takeoff, type TakeoffState } from './puppetDirector';
 
 /** The page camera every station is solved against. */
 export const CANON = { z: 10, fov: 30 } as const;
@@ -45,6 +46,8 @@ export const solved = {
     lid: 1,
     /** 0 = laptop on his lap, 1 = set down on the palm. */
     laptopAside: 0,
+    /** The 3D MacBook (hidden while the seated render, which has its own, is on screen). */
+    laptopVisible: true,
     handsOut: 0,
     dissolve: 0,
     /** Current world offsets of the hands (entrance + exit drift). */
@@ -74,6 +77,10 @@ export const solved = {
     look: new THREE.Vector2(),
     lookWeight: 0,
     onHero: false,
+    /** A dedicated pose render (puppet) owns the character this frame; the base pose is not drawn. */
+    owned: false,
+    /** Base-pose opacity multiplier (fades in under a render during a hand-over). */
+    fade: 1,
     /* ---- image path ---- */
     rig: { ...STAND },
     rigOverlay: { ...STAND },
@@ -100,6 +107,12 @@ export const solved = {
   },
   /** Finale: MacBook opens, camera flies into the screen. `active` = it owns the camera. */
   finale: { active: false, q: 0 },
+  /** Dedicated pose renders (layered puppets). When `puppet.id` is set it owns the character. */
+  puppet,
+  /** A second render drawn under `puppet` while one hands over to the next. */
+  puppetUnder,
+  /** Workspace set from the desk render (chair, desk, monitor, mug + the seated character). */
+  deskSet,
 };
 
 /* ---------- scratch (no allocation per frame) ---------- */
@@ -118,6 +131,9 @@ interface ScreenPoint {
   y: number;
   h: number;
 }
+const tk: TakeoffState = { t: 0, rise: 0 };
+const baseOffset = new THREE.Vector3();
+const baseFade = { value: 1 };
 const sA: ScreenPoint = { x: 0, y: 0, h: 0 };
 const sB: ScreenPoint = { x: 0, y: 0, h: 0 };
 const sOut: ScreenPoint = { x: 0, y: 0, h: 0 };
@@ -275,6 +291,7 @@ export function solveFrame(vw: number, vh: number, dt: number) {
   const hero = solved.hero;
   const model = hasCharacterModel();
   const T = heroLayout.timeline;
+  resetPuppetFrame();
 
   /* ---------- hero ---------- */
   const p = bus.hero.present ? bus.hero.progress : 1;
@@ -289,6 +306,8 @@ export function solveFrame(vw: number, vh: number, dt: number) {
   hero.lowerOffset.set(...heroLayout.lowerHand.enter).multiplyScalar(ent).addScaledVector(vTmp.set(...heroLayout.lowerHand.exit), hero.handsOut);
   hero.upperOffset.set(...heroLayout.upperHand.enter).multiplyScalar(ent).addScaledVector(vTmp.set(...heroLayout.upperHand.exit), hero.handsOut);
   solved.camBlend = bus.hero.present ? smoothstep(range(p, T.camera[0], T.camera[1])) : 1;
+  hero.laptopVisible = true;
+  if (!model) requestAhead(p, bus.hero.present, vh);
 
   /* ---------- active station pair ---------- */
   const stations = bus.stations;
@@ -300,6 +319,8 @@ export function solveFrame(vw: number, vh: number, dt: number) {
   }
 
   c.show = false;
+  c.owned = false;
+  c.fade = 1;
   c.onHero = false;
   c.lookWeight = 0;
   c.oneShot = null;
@@ -386,11 +407,36 @@ export function solveFrame(vw: number, vh: number, dt: number) {
       c.shadow.opacity = 0;
     } else {
       /* ================= image character path ================= */
+      let owned = false; // a dedicated render owns the character this frame
       if (B.hero && !parked) {
-        heroFrame(p, clock, hero.lowerOffset, vB, frame);
+        // seated → closing → rising renders, then the base pose (which they hand over to)
+        const heroPuppet = solveHeroPuppet(p, clock, hero.lowerOffset, baseOffset, baseFade);
+        heroFrame(p, clock, hero.lowerOffset, vB, frame, baseOffset);
         c.onHero = p < T.leap[0];
+        if (heroPuppet === 'owned') owned = true;
+        c.fade = baseFade.value;
+        // the renders carry their own MacBook; the 3D one takes over in his hand at the hand-over
+        if (heroPuppet) hero.laptopVisible = heroPuppet === 'overlay';
+      } else if (B.prop === 'desk' && (B.travel > 0 || parked)) {
+        // Workspace: walk in, sit, the seated render (falls back to the base pose if not loaded yet)
+        // just off the left edge (half his profile width), so the walk is short and on screen at once
+        sOut.x = B.enter === 'left' ? -sB.h * 0.22 : vw + sB.h * 0.22;
+        sOut.y = sB.y;
+        sOut.h = sB.h;
+        screenToWorld(sOut, vw, vh, vA);
+        if (solveWalker(t, vB, vA, clock, frame.shadow)) owned = true;
+        else if (parked) stationFrame(B.state, B.arrive, B.pose === 'sit', clock - arrivalTime, clock, vB, c.look, c.lookWeight, frame, hipsLiftOf(B));
+        else {
+          walkFrame(t, clock, vA, vB, frame);
+          if (t > 0.9) blendSeated(smoothstep(range(t, 0.9, 1)), B, vB);
+        }
       } else if (parked || (!A && B.enter === 'none')) {
         stationFrame(B.state, B.arrive, B.pose === 'sit', clock - arrivalTime, clock, vB, c.look, c.lookWeight, frame, hipsLiftOf(B));
+        if (B.id === 'work') {
+          // Selected Work: leaves the WORK letters, then flies across the projects
+          takeoff(B, vh, tk);
+          if (tk.t > 0) takeoffFrame(tk.t, clock, vB, tk.rise, frame);
+        }
       } else {
         // Origin of the hop: the previous station, or just off-screen for entrances.
         if (B.enter !== 'none' || !A) {
@@ -421,6 +467,9 @@ export function solveFrame(vw: number, vh: number, dt: number) {
       c.yaw = 0;
       c.state = B.state;
       solveImage(frame.want, dt);
+      if (!owned && solveFlight(clock, vw, vh)) owned = true;
+      // the base pose keeps solving underneath (smooth hand-backs) but is not drawn
+      c.owned = owned;
     }
 
     /* ---------- on-screen test ---------- */
@@ -431,10 +480,19 @@ export function solveFrame(vw: number, vh: number, dt: number) {
       const halfW = sOut.h * 0.35;
       c.show = sOut.x + halfW > -60 && sOut.x - halfW < vw + 60 && sOut.y > -60 && sOut.y - sOut.h * 1.2 < vh + 60;
     }
+    // Exactly one character on screen: a dedicated render, or the base pose.
+    if (c.owned) c.show = false;
+    if (!bus.hero.visible && puppet.id?.startsWith('hero-')) {
+      puppet.id = null;
+      puppetUnder.id = null;
+    }
+    if (puppet.id === null && tk.t >= 1 && B.id === 'work') c.show = false;
+
     lastFeet.copy(c.pos);
   } else {
     prevScreen.valid = false;
     arrivedAt = '';
+    tk.t = 0;
   }
 
   /* ---------- desk props follow their station whenever its section is on screen ---------- */
@@ -447,7 +505,13 @@ export function solveFrame(vw: number, vh: number, dt: number) {
     screenToWorld(sA, vw, vh, solved.desk.pos);
     // Desk faces the camera: the seated image character works across it toward us.
     solved.desk.yaw = -Math.PI / 2;
-    solved.desk.show = true;
+    if (!model && deskReady()) {
+      // The photographed set replaces the procedural desk (never both on screen).
+      placeDeskSet(solved.desk.pos, s.travel, range(-sec.top, 0, Math.max(1, sec.height - vh)), clock);
+      solved.desk.show = false;
+    } else {
+      solved.desk.show = true;
+    }
   }
 
   /* ---------- Selected Work panels ---------- */
@@ -480,7 +544,12 @@ export function solveFrame(vw: number, vh: number, dt: number) {
     }
   }
 
-  solved.any = hero.show || c.show || solved.desk.show || solved.finale.active || solved.panels.show;
+  if (solved.finale.active) {
+    puppet.id = null;
+    puppetUnder.id = null;
+    deskSet.show = false;
+  }
+  solved.any = hero.show || c.show || solved.desk.show || solved.finale.active || solved.panels.show || puppet.id !== null || deskSet.show;
   return solved;
 }
 

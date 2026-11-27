@@ -36,14 +36,24 @@ export default function AboutPage() {
 
         <section className={`layer-front ${styles.section}`} aria-labelledby="exp-title">
           <h2 id="exp-title" className={`mono ${styles.label}`}>
-            Experience — placeholder
+            Experience
           </h2>
           <ol className={styles.rows}>
-            {about.experience.map((e, i) => (
-              <li key={i} className={styles.row} data-reveal="fade">
+            {about.experience.map((e) => (
+              <li key={e.organisation + e.period} className={styles.row} data-reveal="fade">
                 <span className={styles.role}>{e.role}</span>
-                <span className="small">{e.organisation}</span>
+                <span className="small">
+                  {e.organisation}
+                  {e.location && <span className="muted"> — {e.location}</span>}
+                </span>
                 <span className="mono muted">{e.period}</span>
+                {e.highlights && (
+                  <ul className={`small ${styles.highlights}`}>
+                    {e.highlights.map((h) => (
+                      <li key={h}>{h}</li>
+                    ))}
+                  </ul>
+                )}
               </li>
             ))}
           </ol>
@@ -65,6 +75,38 @@ export default function AboutPage() {
               </div>
             ))}
           </div>
+        </section>
+
+        <section className={`layer-front ${styles.section}`} aria-labelledby="edu-title">
+          <h2 id="edu-title" className={`mono ${styles.label}`}>
+            Education & volunteering
+          </h2>
+          <ol className={styles.rows}>
+            {[...about.education, ...about.volunteering].map((e) => (
+              <li key={e.place} className={styles.row} data-reveal="fade">
+                <span className={styles.role}>{e.title}</span>
+                <span className="small">
+                  {e.place}
+                  <span className="muted"> — {e.note}</span>
+                </span>
+                <span className="mono muted">{e.period}</span>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section className={`layer-front ${styles.section}`} aria-labelledby="lang-title">
+          <h2 id="lang-title" className={`mono ${styles.label}`}>
+            Languages
+          </h2>
+          <ul className={styles.skills}>
+            {about.languages.map((l) => (
+              <li key={l.name} data-reveal="fade">
+                <h3 className={styles.group}>{l.name}</h3>
+                <p className="small muted">{l.level}</p>
+              </li>
+            ))}
+          </ul>
         </section>
       </div>
       <SiteFooter />

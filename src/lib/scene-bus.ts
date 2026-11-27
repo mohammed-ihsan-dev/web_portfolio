@@ -52,6 +52,10 @@ export const bus = {
     /** The footer element mapped onto the 3D display. */
     screen: null as HTMLElement | null,
   },
+  /** Selected Work flight: one record per project row (progress written by ScrollTrigger). */
+  flight: {
+    rows: [] as { el: HTMLElement; media: HTMLElement; img: HTMLElement | null; index: number; progress: number }[],
+  },
   /** Project panel slots in Selected Work (3D panels land on these links). */
   panelSlots: [] as HTMLElement[],
   stations: [] as StationRecord[],

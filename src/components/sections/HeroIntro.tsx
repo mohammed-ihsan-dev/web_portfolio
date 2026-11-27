@@ -110,13 +110,16 @@ export function HeroIntro() {
           <p className={`mono ${styles.kicker}`} data-intro-copy>
             {intro.kicker}
           </p>
-          <p className={`small ${styles.bio}`} data-intro-copy>
-            {intro.bio}
-          </p>
-          <TransitionLink href="/about" className={`small ${styles.aboutLink}`} data-intro-copy transitionLabel="About">
-            {intro.aboutCta}
-            <ArrowIcon direction="right" />
-          </TransitionLink>
+          {/* One block, so the link always follows the bio whatever its length. */}
+          <div className={styles.bio}>
+            <p className="small" data-intro-copy>
+              {intro.bio}
+            </p>
+            <TransitionLink href="/about" className={`small ${styles.aboutLink}`} data-intro-copy transitionLabel="About">
+              {intro.aboutCta}
+              <ArrowIcon direction="right" />
+            </TransitionLink>
+          </div>
           <ol className={styles.caps} aria-label="Capabilities">
             {expertise.capabilities.map((c) => (
               <li key={c.title} data-intro-copy>
